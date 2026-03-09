@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    /* ===== CSS Custom Properties ===== */
+    :root {
+      --primary: #667eea;
+      --primary-dark: #764ba2;
+      --accent: #f093fb;
+      --accent-light: #c471f5;
+      --bg: #f4f2fb;
+      --text-primary: #2d2d3d;
+      --text-secondary: #6b6b80;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(255, 255, 255, 0.45);
+      --shadow-sm: 0 4px 6px rgba(102, 126, 234, 0.08);
+      --shadow-md: 0 8px 30px rgba(102, 126, 234, 0.12);
+      --shadow-lg: 0 20px 60px rgba(102, 126, 234, 0.18);
+      --radius-sm: 14px;
+      --radius-md: 22px;
+      --radius-lg: 30px;
+      --font: 'Poppins', sans-serif;
+      --transition: 0.3s ease;
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      color: var(--text-primary);
+      background: var(--bg);
+      line-height: 1.7;
+      overflow-x: hidden;
+      position: relative;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+
+    /* ===== Subtle Aurora Background ===== */
+    .aurora-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .aurora-bg::before,
+    .aurora-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.25;
+    }
+    .aurora-bg::before {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(102,126,234,0.5), rgba(118,75,162,0.2), transparent);
+      top: -10%;
+      left: -5%;
+      animation: auroraMove1 20s ease-in-out infinite;
+    }
+    .aurora-bg::after {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(240,147,251,0.35), rgba(102,126,234,0.15), transparent);
+      bottom: -10%;
+      right: -5%;
+      animation: auroraMove2 24s ease-in-out infinite;
+    }
+    .aurora-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.18;
+    }
+    .aurora-orb:nth-child(1) {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(196,113,245,0.5), transparent);
+      top: 40%;
+      left: 30%;
+      animation: auroraMove3 18s ease-in-out infinite;
+    }
+    .aurora-orb:nth-child(2) {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(79,172,254,0.4), transparent);
+      top: 20%;
+      right: 15%;
+      animation: auroraMove1 22s ease-in-out infinite reverse;
+    }
+    @keyframes auroraMove1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(60px, 40px) scale(1.1); }
+      50% { transform: translate(-30px, 80px) scale(0.95); }
+      75% { transform: translate(40px, -20px) scale(1.05); }
+    }
+    @keyframes auroraMove2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(-50px, -30px) scale(1.08); }
+      50% { transform: translate(40px, -60px) scale(0.92); }
+      75% { transform: translate(-20px, 30px) scale(1.04); }
+    }
+    @keyframes auroraMove3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(50px, -40px) scale(1.12); }
+      66% { transform: translate(-40px, 30px) scale(0.9); }
+    }
+
+    /* ===== Typography ===== */
+    h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 700; line-height: 1.15; }
+    h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 600; }
+    h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 600; }
+    h4 { font-size: 1rem; font-weight: 500; }
+    p { color: var(--text-secondary); }
+    .section-title {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+    .section-title h2 {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-title p {
+      margin-top: 0.5rem;
+      font-size: 1.05rem;
+    }
+
+    /* ===== Layout ===== */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    section {
+      padding: 80px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== Section Divider ===== */
+    .section-divider {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .section-divider .divider-line {
+      flex: 1;
+      max-width: 520px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(102,126,234,0.3), rgba(118,75,162,0.3), transparent);
+    }
+    .section-divider .divider-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      margin: 0 16px;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(102,126,234,0.3);
+    }
+
+    /* ===== Section Controls (Edit Mode) ===== */
+    .section-controls {
+      display: none;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .edit-mode .section-controls { display: flex; }
+    .section-controls .ctrl-btn {
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 2px dashed rgba(102,126,234,0.4);
+      background: rgba(255,255,255,0.7);
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font);
+    }
+    .section-controls .ctrl-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-style: solid;
+    }
+    .section-controls .ctrl-btn.ctrl-danger {
+      border-color: rgba(245,87,108,0.4);
+      color: #f5576c;
+    }
+    .section-controls .ctrl-btn.ctrl-danger:hover {
+      background: #f5576c;
+      color: #fff;
+    }
+
+    /* ===== Item Remove Button (shown on every card in edit mode) ===== */
+    .item-remove-btn {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(245,87,108,0.15);
+      color: #f5576c;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font);
+      z-index: 5;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .item-remove-btn:hover {
+      background: #f5576c;
+      color: #fff;
+      transform: scale(1.15);
+    }
+    .edit-mode .item-remove-btn { display: flex; }
+
+    /* Skill item edit controls */
+    .skill-item-controls {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-left: 8px;
+    }
+    .edit-mode .skill-item-controls { display: flex; }
+    .skill-item-controls button {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      font-family: var(--font);
+    }
+    .skill-item-controls .pct-btn {
+      background: rgba(102,126,234,0.12);
+      color: var(--primary);
+    }
+    .skill-item-controls .pct-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+    .skill-item-controls .remove-btn {
+      background: rgba(245,87,108,0.12);
+      color: #f5576c;
+      font-size: 0.85rem;
+    }
+    .skill-item-controls .remove-btn:hover {
+      background: #f5576c;
+      color: #fff;
+    }
+
+    .edit-mode .skill-percent {
+      cursor: pointer;
+      border-bottom: 1px dashed var(--primary);
+    }
+
+    /* Tag remove button */
+    .tag-remove {
+      display: none;
+      margin-left: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      color: #f5576c;
+      font-size: 0.9rem;
+    }
+    .edit-mode .tag-remove { display: inline; }
+
+    /* ===== Sticky Nav ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 14px 0;
+      background: rgba(244, 242, 251, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      transition: var(--transition);
+    }
+    .navbar.scrolled {
+      box-shadow: var(--shadow-sm);
+      background: rgba(244, 242, 251, 0.9);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2.5px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--primary); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      width: 26px;
+      height: 2.5px;
+      border-radius: 3px;
+      background: var(--text-primary);
+      transition: var(--transition);
+    }
+
+    /* ===== Hero Section ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(135deg, #1a1035 0%, #2d1b69 30%, #4a2c8a 60%, #1e1145 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+      z-index: 1;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero * { color: #ffffff; }
+    .hero h1 { color: #fff; text-shadow: 0 2px 20px rgba(102,126,234,0.4); }
+    .hero p { color: rgba(220,210,255,0.9); }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .hero-particles span {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+    .profile-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      margin: 0 auto 28px;
+      overflow: hidden;
+      border: 4px solid rgba(255,255,255,0.35);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: var(--transition);
+      background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .profile-photo:hover { transform: scale(1.06); box-shadow: 0 14px 50px rgba(0,0,0,0.22); }
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-photo .initials {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .hero h1 { margin-bottom: 8px; }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 400;
+      margin-bottom: 14px;
+      opacity: 0.92;
+    }
+    .hero-tagline {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      font-weight: 300;
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 1.7em;
+    }
+    .hero-tagline .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: #fff;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      animation: blink 0.8s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+    }
+    .scroll-indicator svg { width: 28px; height: 28px; stroke: rgba(255,255,255,0.6); fill: none; }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-12px); }
+      60% { transform: translateX(-50%) translateY(-6px); }
+    }
+
+    /* ===== Glass Card ===== */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .glass-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ===== About Section ===== */
+    #about .about-card {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    #about .about-card p { font-size: 1.08rem; line-height: 1.85; }
+
+    /* ===== Timeline (Experience & Education) ===== */
+    .timeline {
+      position: relative;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 3px;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      display: flex;
+      width: 100%;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .timeline-item:nth-child(odd) { justify-content: flex-start; padding-right: calc(50% + 30px); }
+    .timeline-item:nth-child(even) { justify-content: flex-end; padding-left: calc(50% + 30px); }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: 3px solid var(--bg);
+      box-shadow: var(--shadow-sm);
+      z-index: 1;
+    }
+    .timeline-card { width: 100%; }
+    .timeline-card .date {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(102,126,234,0.1);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .timeline-card h3 { margin-bottom: 4px; }
+    .timeline-card h4 { color: var(--text-secondary); margin-bottom: 10px; font-weight: 400; }
+    .timeline-card ul { margin-top: 8px; }
+    .timeline-card ul li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 5px;
+      font-size: 0.93rem;
+      color: var(--text-secondary);
+    }
+    .timeline-card ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ===== Certifications ===== */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    .cert-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      text-align: center;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cert-card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: calc(var(--radius-md) + 2px);
+      background: linear-gradient(135deg, var(--primary), var(--accent), var(--primary));
+      background-size: 200% 200%;
+      z-index: -1;
+      animation: gradientBorder 4s ease infinite;
+    }
+    @keyframes gradientBorder {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .cert-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+    .cert-badge {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      animation: certFloat 3s ease-in-out infinite;
+      overflow: hidden;
+    }
+    .cert-badge img { width: 100%; height: 100%; object-fit: cover; }
+    .cert-badge-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .cert-badge-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .cert-badge-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .cert-badge-4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    .cert-badge-5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+    @keyframes certFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .cert-card h3 { font-size: 1.05rem; margin-bottom: 6px; }
+    .cert-card .cert-issuer { font-size: 0.88rem; color: var(--primary); font-weight: 500; }
+    .cert-card .cert-date { font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; }
+    .cert-card .cert-id { font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px; opacity: 0.7; }
+
+    /* ===== Skills ===== */
+    .skills-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; max-width: 900px; margin: 0 auto; }
+    .skill-bars h3 { margin-bottom: 22px; }
+    .skill-item { margin-bottom: 18px; }
+    .skill-item .skill-info { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .skill-item .skill-name { font-size: 0.92rem; font-weight: 500; }
+    .skill-item .skill-percent { font-size: 0.85rem; color: var(--primary); font-weight: 600; }
+    .skill-bar-bg {
+      width: 100%;
+      height: 10px;
+      border-radius: 10px;
+      background: rgba(102,126,234,0.12);
+      overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0;
+      transition: width 1.4s ease-out;
+    }
+    .skill-tags h3 { margin-bottom: 22px; }
+    .tags-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tag {
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: rgba(102,126,234,0.1);
+      color: var(--primary);
+      transition: var(--transition);
+      cursor: default;
+    }
+    .tag:hover {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ===== Projects ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 28px;
+    }
+    .project-card { overflow: hidden; padding: 0; position: relative; }
+    .project-thumb {
+      height: 190px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .project-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .project-card:hover .project-thumb img { transform: scale(1.08); }
+    .project-thumb .placeholder-gradient {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .project-thumb .placeholder-gradient.pg-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .project-thumb .placeholder-gradient.pg-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .project-thumb .placeholder-gradient.pg-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .project-body { padding: 24px; }
+    .project-body h3 { margin-bottom: 8px; }
+    .project-body p { font-size: 0.92rem; margin-bottom: 14px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .project-tags span {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      background: rgba(102,126,234,0.08);
+      color: var(--primary);
+    }
+
+    /* ===== Contact ===== */
+    .contact-content { text-align: center; max-width: 600px; margin: 0 auto; }
+    .contact-content > p { font-size: 1.05rem; margin-bottom: 35px; }
+    .contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 26px;
+      border-radius: 50px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      font-weight: 500;
+      font-size: 0.92rem;
+      transition: var(--transition);
+    }
+    .contact-link:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+    }
+    .contact-link:hover svg { stroke: #fff; }
+    .contact-link svg { width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ===== Footer ===== */
+    .footer {
+      text-align: center;
+      padding: 30px 0;
+      position: relative;
+      z-index: 1;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    /* ===== FAB Buttons ===== */
+    .fab-group {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .fab {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+    .fab:hover { transform: scale(1.12); box-shadow: var(--shadow-lg); }
+    .fab svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .fab-edit {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    }
+    .fab-edit.active {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+    }
+    .fab-secondary {
+      width: 46px;
+      height: 46px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: scale(0.5) translateY(20px);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .fab-secondary svg { stroke: var(--primary); width: 20px; height: 20px; }
+    .fab-group.edit-active .fab-secondary {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+    .fab-secondary:nth-child(1) { transition-delay: 0.05s; }
+    .fab-secondary:nth-child(2) { transition-delay: 0.1s; }
+
+    .save-toast {
+      position: fixed;
+      bottom: 100px;
+      right: 28px;
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .save-toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ===== Edit Mode Styles ===== */
+    .edit-mode [data-editable] {
+      outline: 2px dashed rgba(102, 126, 234, 0.35);
+      outline-offset: 4px;
+      border-radius: 6px;
+      cursor: text;
+      transition: outline-color 0.2s ease;
+    }
+    .edit-mode [data-editable]:hover {
+      outline-color: rgba(102, 126, 234, 0.65);
+    }
+    .editable-active {
+      outline: 2px solid var(--primary) !important;
+      outline-offset: 4px !important;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+      animation: editPulse 2s ease-in-out infinite;
+    }
+    @keyframes editPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15); }
+      50% { box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.08); }
+    }
+    .edit-mode [data-image-editable] {
+      position: relative;
+      cursor: pointer;
+    }
+    .edit-mode [data-image-editable]::after {
+      content: 'Click to change';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .edit-mode [data-image-editable]:hover::after { opacity: 1; }
+    .edit-banner {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 8px 24px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .edit-banner.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      section { padding: 60px 0; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(244,242,251,0.95);
+        backdrop-filter: blur(16px);
+        padding: 20px;
+        gap: 16px;
+        box-shadow: var(--shadow-md);
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+      }
+      .hamburger { display: flex; }
+      .timeline::before { left: 20px; }
+      .timeline-item:nth-child(odd),
+      .timeline-item:nth-child(even) {
+        padding-left: 55px;
+        padding-right: 0;
+        justify-content: flex-start;
+      }
+      .timeline-item::after { left: 20px; transform: translateX(-50%); }
+      .skills-wrapper { grid-template-columns: 1fr; gap: 35px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .cert-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .profile-photo { width: 120px; height: 120px; }
+      .glass-card { padding: 22px; }
+      .contact-links { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== AURORA BACKGROUND ===== -->
+  <div class="aurora-bg">
+    <div class="aurora-orb"></div>
+    <div class="aurora-orb"></div>
+  </div>
+
+  <!-- ===== NAV ===== -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" id="nav-logo" data-editable="true">My Resume</a>
+      <div class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#education">Education</a>
+        <a href="#certifications">Certifications</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-content">
+      <div class="profile-photo" id="profile-photo" data-image-editable="true">
+        <span class="initials" id="hero-initials" data-editable="true">YN</span>
+      </div>
+      <h1 id="hero-name" data-editable="true" data-aos="fade-up">Your Name</h1>
+      <p class="hero-subtitle" id="hero-title" data-editable="true" data-aos="fade-up" data-aos-delay="100">Your Professional Title</p>
+      <p class="hero-tagline" id="hero-tagline" data-aos="fade-up" data-aos-delay="200">
+        <span class="tagline-text"></span><span class="cursor"></span>
+      </p>
+    </div>
+    <div class="scroll-indicator">
+      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="about-heading" data-editable="true">About Me</h2>
+        <p id="about-subtitle" data-editable="true">Get to know me a little better</p>
+      </div>
+      <div class="glass-card about-card" data-aos="fade-up" data-aos-delay="100">
+        <p id="about-text" data-editable="true">Welcome! I'm a passionate professional dedicated to creating impactful solutions and delivering exceptional results. With a strong foundation in my field and a love for continuous learning, I bring creativity and technical expertise to every project I take on.<br><br>When I'm not working, you can find me exploring new technologies, contributing to open-source projects, and mentoring aspiring professionals. I believe in the power of collaboration and always strive to make a positive impact in everything I do.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="exp-heading" data-editable="true">Work Experience</h2>
+        <p id="exp-subtitle" data-editable="true">My professional journey so far</p>
+      </div>
+      <div class="timeline" id="exp-timeline">
+        <div class="timeline-item" data-aos="fade-right" data-aos-delay="100">
+          <div class="glass-card timeline-card">
+            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+            <span class="date" id="exp1-date" data-editable="true">2023 — Present</span>
+            <h3 id="exp1-role" data-editable="true">Senior Developer</h3>
+            <h4 id="exp1-company" data-editable="true">TechCorp Inc.</h4>
+            <ul>
+              <li id="exp1-b1" data-editable="true">Led development of scalable microservices architecture</li>
+              <li id="exp1-b2" data-editable="true">Mentored team of 5 junior developers</li>
+              <li id="exp1-b3" data-editable="true">Reduced deployment time by 40% through CI/CD improvements</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item" data-aos="fade-left" data-aos-delay="200">
+          <div class="glass-card timeline-card">
+            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+            <span class="date" id="exp2-date" data-editable="true">2020 — 2023</span>
+            <h3 id="exp2-role" data-editable="true">Full Stack Developer</h3>
+            <h4 id="exp2-company" data-editable="true">StartupXYZ</h4>
+            <ul>
+              <li id="exp2-b1" data-editable="true">Built customer-facing web application serving 50K+ users</li>
+              <li id="exp2-b2" data-editable="true">Implemented real-time data processing pipeline</li>
+              <li id="exp2-b3" data-editable="true">Collaborated with design team to improve UX across the platform</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item" data-aos="fade-right" data-aos-delay="300">
+          <div class="glass-card timeline-card">
+            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+            <span class="date" id="exp3-date" data-editable="true">2018 — 2020</span>
+            <h3 id="exp3-role" data-editable="true">Junior Developer</h3>
+            <h4 id="exp3-company" data-editable="true">WebAgency Co.</h4>
+            <ul>
+              <li id="exp3-b1" data-editable="true">Developed responsive websites for 20+ clients</li>
+              <li id="exp3-b2" data-editable="true">Maintained and updated legacy codebases</li>
+              <li id="exp3-b3" data-editable="true">Participated in agile sprints and daily standups</li>
+            </ul>
+          </div>
+        </div>
+        <div class="section-controls">
+          <button class="ctrl-btn" data-action="add-experience">+ Add Experience</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== EDUCATION ===== -->
+  <section id="education">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="edu-heading" data-editable="true">Education</h2>
+        <p id="edu-subtitle" data-editable="true">My academic background</p>
+      </div>
+      <div class="timeline" id="edu-timeline">
+        <div class="timeline-item" data-aos="fade-right" data-aos-delay="100">
+          <div class="glass-card timeline-card">
+            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+            <span class="date" id="edu1-date" data-editable="true">2014 — 2018</span>
+            <h3 id="edu1-degree" data-editable="true">Bachelor of Science in Computer Science</h3>
+            <h4 id="edu1-school" data-editable="true">University of Technology</h4>
+            <ul>
+              <li id="edu1-b1" data-editable="true">Graduated Magna Cum Laude — GPA: 3.8/4.0</li>
+              <li id="edu1-b2" data-editable="true">Dean's List all semesters</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item" data-aos="fade-left" data-aos-delay="200">
+          <div class="glass-card timeline-card">
+            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+            <span class="date" id="edu2-date" data-editable="true">2022</span>
+            <h3 id="edu2-degree" data-editable="true">Full Stack Web Development Bootcamp</h3>
+            <h4 id="edu2-school" data-editable="true">Code Academy Online</h4>
+            <ul>
+              <li id="edu2-b1" data-editable="true">Completed 500+ hours of intensive training</li>
+              <li id="edu2-b2" data-editable="true">Built 10+ production-ready projects</li>
+            </ul>
+          </div>
+        </div>
+        <div class="section-controls">
+          <button class="ctrl-btn" data-action="add-education">+ Add Education</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== CERTIFICATIONS ===== -->
+  <section id="certifications">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="cert-heading" data-editable="true">Certifications</h2>
+        <p id="cert-subtitle" data-editable="true">Professional credentials and achievements</p>
+      </div>
+      <div class="cert-grid" id="cert-grid">
+        <div class="cert-card" data-aos="zoom-in" data-aos-delay="100">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="cert-badge cert-badge-1" id="cert1-badge" data-image-editable="true">
+            <span>AWS</span>
+          </div>
+          <h3 id="cert1-name" data-editable="true">AWS Solutions Architect</h3>
+          <p class="cert-issuer" id="cert1-issuer" data-editable="true">Amazon Web Services</p>
+          <p class="cert-date" id="cert1-date" data-editable="true">Issued: Jan 2024 · Valid through Jan 2027</p>
+          <p class="cert-id" id="cert1-id" data-editable="true">Credential ID: ABC-123456</p>
+        </div>
+        <div class="cert-card" data-aos="zoom-in" data-aos-delay="200">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="cert-badge cert-badge-2" id="cert2-badge" data-image-editable="true">
+            <span>GCP</span>
+          </div>
+          <h3 id="cert2-name" data-editable="true">Google Cloud Professional</h3>
+          <p class="cert-issuer" id="cert2-issuer" data-editable="true">Google Cloud</p>
+          <p class="cert-date" id="cert2-date" data-editable="true">Issued: Mar 2023 · Valid through Mar 2026</p>
+          <p class="cert-id" id="cert2-id" data-editable="true">Credential ID: GCP-789012</p>
+        </div>
+        <div class="cert-card" data-aos="zoom-in" data-aos-delay="300">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="cert-badge cert-badge-3" id="cert3-badge" data-image-editable="true">
+            <span>PMP</span>
+          </div>
+          <h3 id="cert3-name" data-editable="true">Project Management Professional</h3>
+          <p class="cert-issuer" id="cert3-issuer" data-editable="true">Project Management Institute</p>
+          <p class="cert-date" id="cert3-date" data-editable="true">Issued: Jun 2023</p>
+          <p class="cert-id" id="cert3-id" data-editable="true">Credential ID: PMP-345678</p>
+        </div>
+        <div class="cert-card" data-aos="zoom-in" data-aos-delay="400">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="cert-badge cert-badge-4" id="cert4-badge" data-image-editable="true">
+            <span>CSM</span>
+          </div>
+          <h3 id="cert4-name" data-editable="true">Certified Scrum Master</h3>
+          <p class="cert-issuer" id="cert4-issuer" data-editable="true">Scrum Alliance</p>
+          <p class="cert-date" id="cert4-date" data-editable="true">Issued: Sep 2022</p>
+          <p class="cert-id" id="cert4-id" data-editable="true">Credential ID: CSM-901234</p>
+        </div>
+        <div class="cert-card" data-aos="zoom-in" data-aos-delay="500">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="cert-badge cert-badge-5" id="cert5-badge" data-image-editable="true">
+            <span>AZ</span>
+          </div>
+          <h3 id="cert5-name" data-editable="true">Microsoft Azure Fundamentals</h3>
+          <p class="cert-issuer" id="cert5-issuer" data-editable="true">Microsoft</p>
+          <p class="cert-date" id="cert5-date" data-editable="true">Issued: Nov 2023</p>
+          <p class="cert-id" id="cert5-id" data-editable="true">Credential ID: AZ-567890</p>
+        </div>
+        <div class="section-controls">
+          <button class="ctrl-btn" data-action="add-cert">+ Add Certification</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="skills-heading" data-editable="true">Skills</h2>
+        <p id="skills-subtitle" data-editable="true">Technologies and tools I work with</p>
+      </div>
+      <div class="skills-wrapper" data-aos="fade-up" data-aos-delay="100">
+        <div class="skill-bars">
+          <h3 id="skills-bars-title" data-editable="true">Core Skills</h3>
+          <div class="skill-item">
+            <div class="skill-info">
+              <span class="skill-name" data-editable="true">JavaScript / TypeScript</span>
+              <span class="skill-percent" data-pct="90">90%</span>
+              <div class="skill-item-controls">
+                <button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>
+                <button class="pct-btn" data-dir="+5" title="+5%">+</button>
+                <button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="skill-bar-bg"><div class="skill-fill" data-percent="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info">
+              <span class="skill-name" data-editable="true">Python</span>
+              <span class="skill-percent" data-pct="85">85%</span>
+              <div class="skill-item-controls">
+                <button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>
+                <button class="pct-btn" data-dir="+5" title="+5%">+</button>
+                <button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="skill-bar-bg"><div class="skill-fill" data-percent="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info">
+              <span class="skill-name" data-editable="true">React / Next.js</span>
+              <span class="skill-percent" data-pct="88">88%</span>
+              <div class="skill-item-controls">
+                <button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>
+                <button class="pct-btn" data-dir="+5" title="+5%">+</button>
+                <button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="skill-bar-bg"><div class="skill-fill" data-percent="88"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info">
+              <span class="skill-name" data-editable="true">Node.js</span>
+              <span class="skill-percent" data-pct="82">82%</span>
+              <div class="skill-item-controls">
+                <button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>
+                <button class="pct-btn" data-dir="+5" title="+5%">+</button>
+                <button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="skill-bar-bg"><div class="skill-fill" data-percent="82"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info">
+              <span class="skill-name" data-editable="true">Cloud Services (AWS/GCP)</span>
+              <span class="skill-percent" data-pct="78">78%</span>
+              <div class="skill-item-controls">
+                <button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>
+                <button class="pct-btn" data-dir="+5" title="+5%">+</button>
+                <button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="skill-bar-bg"><div class="skill-fill" data-percent="78"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info">
+              <span class="skill-name" data-editable="true">SQL / NoSQL Databases</span>
+              <span class="skill-percent" data-pct="80">80%</span>
+              <div class="skill-item-controls">
+                <button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>
+                <button class="pct-btn" data-dir="+5" title="+5%">+</button>
+                <button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="skill-bar-bg"><div class="skill-fill" data-percent="80"></div></div>
+          </div>
+          <div class="section-controls">
+            <button class="ctrl-btn" data-action="add-skill">+ Add Skill</button>
+          </div>
+        </div>
+        <div class="skill-tags">
+          <h3 id="skills-tags-title" data-editable="true">Other Skills</h3>
+          <div class="tags-cloud" id="tags-cloud">
+            <span class="tag" data-editable="true">Git<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Docker<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Kubernetes<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">REST APIs<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">GraphQL<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">CI/CD<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Agile/Scrum<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Figma<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Testing<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Linux<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">Terraform<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+            <span class="tag" data-editable="true">MongoDB<span class="tag-remove" data-action="remove-tag">&times;</span></span>
+          </div>
+          <div class="section-controls">
+            <button class="ctrl-btn" data-action="add-tag">+ Add Tag</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="proj-heading" data-editable="true">Projects</h2>
+        <p id="proj-subtitle" data-editable="true">Some things I've built</p>
+      </div>
+      <div class="projects-grid" id="projects-grid">
+        <div class="glass-card project-card" data-aos="fade-up" data-aos-delay="100">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="project-thumb" id="proj1-thumb" data-image-editable="true">
+            <div class="placeholder-gradient pg-1">&#9672;</div>
+          </div>
+          <div class="project-body">
+            <h3 id="proj1-title" data-editable="true">E-Commerce Platform</h3>
+            <p id="proj1-desc" data-editable="true">A full-stack e-commerce application with real-time inventory management, payment processing, and an admin dashboard.</p>
+            <div class="project-tags">
+              <span id="proj1-t1" data-editable="true">React</span>
+              <span id="proj1-t2" data-editable="true">Node.js</span>
+              <span id="proj1-t3" data-editable="true">MongoDB</span>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card project-card" data-aos="fade-up" data-aos-delay="200">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="project-thumb" id="proj2-thumb" data-image-editable="true">
+            <div class="placeholder-gradient pg-2">&#9672;</div>
+          </div>
+          <div class="project-body">
+            <h3 id="proj2-title" data-editable="true">Task Management App</h3>
+            <p id="proj2-desc" data-editable="true">A collaborative project management tool with drag-and-drop boards, real-time updates, and team chat integration.</p>
+            <div class="project-tags">
+              <span id="proj2-t1" data-editable="true">Next.js</span>
+              <span id="proj2-t2" data-editable="true">PostgreSQL</span>
+              <span id="proj2-t3" data-editable="true">WebSocket</span>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card project-card" data-aos="fade-up" data-aos-delay="300">
+          <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <div class="project-thumb" id="proj3-thumb" data-image-editable="true">
+            <div class="placeholder-gradient pg-3">&#9672;</div>
+          </div>
+          <div class="project-body">
+            <h3 id="proj3-title" data-editable="true">AI Chat Assistant</h3>
+            <p id="proj3-desc" data-editable="true">An intelligent chatbot powered by large language models with context-aware responses and multi-language support.</p>
+            <div class="project-tags">
+              <span id="proj3-t1" data-editable="true">Python</span>
+              <span id="proj3-t2" data-editable="true">FastAPI</span>
+              <span id="proj3-t3" data-editable="true">LLMs</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-controls">
+          <button class="ctrl-btn" data-action="add-project">+ Add Project</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2 id="contact-heading" data-editable="true">Get In Touch</h2>
+        <p id="contact-subtitle" data-editable="true">Let's connect and build something great</p>
+      </div>
+      <div class="contact-content" data-aos="fade-up" data-aos-delay="100">
+        <p id="contact-text" data-editable="true">I'm always open to discussing new projects, creative ideas, or opportunities to be part of something amazing. Feel free to reach out!</p>
+        <div class="contact-links">
+          <a href="#" class="contact-link" id="contact-email" data-editable="true">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2 4 12 13 22 4"/></svg>
+            your.email@example.com
+          </a>
+          <a href="#" class="contact-link" id="contact-phone" data-editable="true">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            (555) 123-4567
+          </a>
+          <a href="#" class="contact-link" id="contact-linkedin" data-editable="true">
+            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn Profile
+          </a>
+          <a href="#" class="contact-link" id="contact-github" data-editable="true">
+            <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="footer">
+    <p id="footer-text" data-editable="true">&copy; 2026 Your Name. All rights reserved. Built with creativity and passion.</p>
+  </div>
+
+  <!-- ===== FAB BUTTONS ===== -->
+  <div class="fab-group" id="fabGroup">
+    <button class="fab fab-secondary" id="fabExport" title="Export as HTML">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
+    <button class="fab fab-secondary" id="fabSave" title="Save now">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    </button>
+    <button class="fab fab-edit" id="fabEdit" title="Toggle edit mode">
+      <svg id="iconPencil" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <svg id="iconEye" viewBox="0 0 24 24" style="display:none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </div>
+
+  <!-- ===== EDIT MODE BANNER ===== -->
+  <div class="edit-banner" id="editBanner">Edit Mode — Click any text to edit, click images to replace, use X buttons to remove items</div>
+
+  <!-- ===== SAVE TOAST ===== -->
+  <div class="save-toast" id="saveToast">Saved!</div>
+
+  <!-- ===== HIDDEN FILE INPUT ===== -->
+  <input type="file" id="imageUpload" accept="image/*" style="display:none">
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+  (function() {
+    'use strict';
+
+    // ===== Config =====
+    const STORAGE_KEY = 'resume_data_v3';
+    const TAGLINE_TEXT = 'Crafting digital experiences that inspire and delight.';
+    let isEditMode = false;
+    let currentImageTarget = null;
+    let idCounter = Date.now();
+    function uid() { return 'dyn-' + (idCounter++); }
+
+    // ===== AOS Init =====
+    AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
+
+    // ===== Hero Particles =====
+    function createHeroParticles() {
+      const container = document.getElementById('heroParticles');
+      for (let i = 0; i < 30; i++) {
+        const s = document.createElement('span');
+        const size = Math.random() * 3 + 1;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 8 + 6;
+        const delay = Math.random() * 10;
+        s.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + left + '%;animation-duration:' + duration + 's;animation-delay:' + delay + 's;';
+        container.appendChild(s);
+      }
+    }
+    createHeroParticles();
+
+    // ===== Typing Effect =====
+    function startTyping() {
+      const el = document.querySelector('.tagline-text');
+      if (!el) return;
+      const saved = loadData();
+      const text = (saved && saved.sections && saved.sections['hero-tagline-text']) || TAGLINE_TEXT;
+      let i = 0;
+      el.textContent = '';
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          el.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+          setTimeout(() => {
+            const cursor = document.querySelector('.hero-tagline .cursor');
+            if (cursor) cursor.style.display = 'none';
+          }, 2000);
+        }
+      }, 45);
+    }
+    startTyping();
+
+    // ===== Navbar =====
+    const navbar = document.querySelector('.navbar');
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = navLinks.querySelectorAll('a');
+    const observerNav = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navAnchors.forEach(a => a.classList.remove('active'));
+          const active = navLinks.querySelector('a[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { threshold: 0.3 });
+    sections.forEach(s => observerNav.observe(s));
+
+    // ===== Skill Bar Animation =====
+    function animateSkillBars() {
+      document.querySelectorAll('.skill-fill').forEach((bar, i) => {
+        bar.style.transitionDelay = (i * 0.15) + 's';
+        bar.style.width = bar.dataset.percent + '%';
+      });
+    }
+    const skillsSection = document.getElementById('skills');
+    let skillsAnimated = false;
+    const observerSkills = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !skillsAnimated) {
+          skillsAnimated = true;
+          animateSkillBars();
+          observerSkills.disconnect();
+        }
+      });
+    }, { threshold: 0.25 });
+    if (skillsSection) observerSkills.observe(skillsSection);
+
+    // ===== Edit Mode =====
+    const fabEdit = document.getElementById('fabEdit');
+    const fabGroup = document.getElementById('fabGroup');
+    const editBanner = document.getElementById('editBanner');
+    const iconPencil = document.getElementById('iconPencil');
+    const iconEye = document.getElementById('iconEye');
+
+    fabEdit.addEventListener('click', () => {
+      isEditMode = !isEditMode;
+      document.body.classList.toggle('edit-mode', isEditMode);
+      fabEdit.classList.toggle('active', isEditMode);
+      fabGroup.classList.toggle('edit-active', isEditMode);
+      editBanner.classList.toggle('show', isEditMode);
+      iconPencil.style.display = isEditMode ? 'none' : 'block';
+      iconEye.style.display = isEditMode ? 'block' : 'none';
+
+      if (!isEditMode) {
+        document.querySelectorAll('[contenteditable]').forEach(el => {
+          el.removeAttribute('contenteditable');
+          el.classList.remove('editable-active');
+        });
+        saveData();
+        showToast();
+      }
+    });
+
+    // Delegated click handler for everything in edit mode
+    document.body.addEventListener('click', (e) => {
+      if (!isEditMode) return;
+
+      // --- Skill percentage buttons ---
+      const pctBtn = e.target.closest('.pct-btn');
+      if (pctBtn) {
+        e.stopPropagation();
+        const skillItem = pctBtn.closest('.skill-item');
+        const pctEl = skillItem.querySelector('.skill-percent');
+        const fillEl = skillItem.querySelector('.skill-fill');
+        let val = parseInt(pctEl.dataset.pct) || 0;
+        val += parseInt(pctBtn.dataset.dir);
+        val = Math.max(0, Math.min(100, val));
+        pctEl.dataset.pct = val;
+        pctEl.textContent = val + '%';
+        fillEl.dataset.percent = val;
+        fillEl.style.width = val + '%';
+        saveData();
+        return;
+      }
+
+      // --- Click on percentage text to type a value ---
+      const pctText = e.target.closest('.skill-percent');
+      if (pctText && !pctText.querySelector('input')) {
+        e.stopPropagation();
+        const current = parseInt(pctText.dataset.pct) || 0;
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '0';
+        input.max = '100';
+        input.value = current;
+        input.style.cssText = 'width:50px;font-size:0.85rem;font-weight:600;border:1px solid var(--primary);border-radius:8px;padding:2px 6px;text-align:center;font-family:inherit;outline:none;';
+        pctText.textContent = '';
+        pctText.appendChild(input);
+        input.focus();
+        input.select();
+        function commit() {
+          let v = Math.max(0, Math.min(100, parseInt(input.value) || 0));
+          pctText.dataset.pct = v;
+          pctText.textContent = v + '%';
+          const fillEl = pctText.closest('.skill-item').querySelector('.skill-fill');
+          fillEl.dataset.percent = v;
+          fillEl.style.width = v + '%';
+          saveData();
+        }
+        input.addEventListener('blur', commit);
+        input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); commit(); } });
+        return;
+      }
+
+      // --- Remove skill ---
+      const removeSkill = e.target.closest('[data-action="remove-skill"]');
+      if (removeSkill) {
+        e.stopPropagation();
+        removeSkill.closest('.skill-item').remove();
+        saveData();
+        return;
+      }
+
+      // --- Remove tag ---
+      const removeTag = e.target.closest('[data-action="remove-tag"]');
+      if (removeTag) {
+        e.stopPropagation();
+        removeTag.closest('.tag').remove();
+        saveData();
+        return;
+      }
+
+      // --- Generic remove item (works for any card with the X button) ---
+      const removeItem = e.target.closest('[data-action="remove-item"]');
+      if (removeItem) {
+        e.stopPropagation();
+        const card = removeItem.closest('.timeline-item, .cert-card, .project-card');
+        if (card) { card.remove(); saveData(); }
+        return;
+      }
+
+      // --- Add skill ---
+      const addSkill = e.target.closest('[data-action="add-skill"]');
+      if (addSkill) {
+        e.stopPropagation();
+        const item = document.createElement('div');
+        item.className = 'skill-item';
+        item.innerHTML = '<div class="skill-info">' +
+          '<span class="skill-name" data-editable="true">New Skill</span>' +
+          '<span class="skill-percent" data-pct="50">50%</span>' +
+          '<div class="skill-item-controls">' +
+            '<button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>' +
+            '<button class="pct-btn" data-dir="+5" title="+5%">+</button>' +
+            '<button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="skill-bar-bg"><div class="skill-fill" data-percent="50" style="width:50%"></div></div>';
+        addSkill.closest('.section-controls').insertAdjacentElement('beforebegin', item);
+        saveData();
+        return;
+      }
+
+      // --- Add tag ---
+      const addTag = e.target.closest('[data-action="add-tag"]');
+      if (addTag) {
+        e.stopPropagation();
+        const cloud = document.getElementById('tags-cloud');
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.setAttribute('data-editable', 'true');
+        tag.innerHTML = 'New Skill<span class="tag-remove" data-action="remove-tag">&times;</span>';
+        cloud.appendChild(tag);
+        saveData();
+        return;
+      }
+
+      // --- Add experience ---
+      const addExp = e.target.closest('[data-action="add-experience"]');
+      if (addExp) {
+        e.stopPropagation();
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = '<div class="glass-card timeline-card">' +
+          '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+          '<span class="date" data-editable="true">20XX — 20XX</span>' +
+          '<h3 data-editable="true">Job Title</h3>' +
+          '<h4 data-editable="true">Company Name</h4>' +
+          '<ul><li data-editable="true">Describe your achievement here</li></ul>' +
+        '</div>';
+        addExp.closest('.section-controls').insertAdjacentElement('beforebegin', item);
+        saveData();
+        return;
+      }
+
+      // --- Add education ---
+      const addEdu = e.target.closest('[data-action="add-education"]');
+      if (addEdu) {
+        e.stopPropagation();
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = '<div class="glass-card timeline-card">' +
+          '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+          '<span class="date" data-editable="true">20XX — 20XX</span>' +
+          '<h3 data-editable="true">Degree / Program</h3>' +
+          '<h4 data-editable="true">Institution Name</h4>' +
+          '<ul><li data-editable="true">Notable achievement</li></ul>' +
+        '</div>';
+        addEdu.closest('.section-controls').insertAdjacentElement('beforebegin', item);
+        saveData();
+        return;
+      }
+
+      // --- Add certification ---
+      const addCert = e.target.closest('[data-action="add-cert"]');
+      if (addCert) {
+        e.stopPropagation();
+        const grid = document.getElementById('cert-grid');
+        const colors = ['cert-badge-1','cert-badge-2','cert-badge-3','cert-badge-4','cert-badge-5'];
+        const color = colors[grid.querySelectorAll('.cert-card').length % colors.length];
+        const card = document.createElement('div');
+        card.className = 'cert-card';
+        card.innerHTML = '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+          '<div class="cert-badge ' + color + '" data-image-editable="true"><span>NEW</span></div>' +
+          '<h3 data-editable="true">Certification Name</h3>' +
+          '<p class="cert-issuer" data-editable="true">Issuing Organization</p>' +
+          '<p class="cert-date" data-editable="true">Issued: Month Year</p>' +
+          '<p class="cert-id" data-editable="true">Credential ID: XXX-XXXXXX</p>';
+        addCert.closest('.section-controls').insertAdjacentElement('beforebegin', card);
+        saveData();
+        return;
+      }
+
+      // --- Add project ---
+      const addProj = e.target.closest('[data-action="add-project"]');
+      if (addProj) {
+        e.stopPropagation();
+        const card = document.createElement('div');
+        card.className = 'glass-card project-card';
+        card.innerHTML = '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+          '<div class="project-thumb" data-image-editable="true">' +
+          '<div class="placeholder-gradient pg-1">&#9672;</div></div>' +
+          '<div class="project-body">' +
+          '<h3 data-editable="true">Project Title</h3>' +
+          '<p data-editable="true">Describe your project here.</p>' +
+          '<div class="project-tags"><span data-editable="true">Tech</span></div>' +
+          '</div>';
+        addProj.closest('.section-controls').insertAdjacentElement('beforebegin', card);
+        saveData();
+        return;
+      }
+
+      // --- Image editable ---
+      const imgTarget = e.target.closest('[data-image-editable]');
+      if (imgTarget) {
+        e.preventDefault();
+        e.stopPropagation();
+        currentImageTarget = imgTarget;
+        document.getElementById('imageUpload').click();
+        return;
+      }
+
+      // --- Text editable ---
+      const editTarget = e.target.closest('[data-editable]');
+      if (editTarget) {
+        document.querySelectorAll('.editable-active').forEach(el => {
+          if (el !== editTarget) {
+            el.removeAttribute('contenteditable');
+            el.classList.remove('editable-active');
+          }
+        });
+        editTarget.setAttribute('contenteditable', 'true');
+        editTarget.classList.add('editable-active');
+        editTarget.focus();
+      }
+    });
+
+    // Blur handler
+    document.body.addEventListener('focusout', (e) => {
+      const el = e.target;
+      if (el.hasAttribute && el.hasAttribute('data-editable') && el.hasAttribute('contenteditable')) {
+        setTimeout(() => {
+          if (!el.contains(document.activeElement)) {
+            el.removeAttribute('contenteditable');
+            el.classList.remove('editable-active');
+            saveData();
+          }
+        }, 100);
+      }
+    });
+
+    // ===== Image Upload =====
+    const imageInput = document.getElementById('imageUpload');
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file || !currentImageTarget) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX = 800;
+          let w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+            else { w = Math.round(w * MAX / h); h = MAX; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const dataUri = canvas.toDataURL('image/jpeg', 0.85);
+
+          const target = currentImageTarget;
+          if (target.classList.contains('profile-photo')) {
+            target.innerHTML = '<img src="' + dataUri + '" alt="Profile photo">';
+          } else if (target.classList.contains('cert-badge')) {
+            target.innerHTML = '<img src="' + dataUri + '" alt="Badge">';
+          } else if (target.classList.contains('project-thumb')) {
+            target.innerHTML = '<img src="' + dataUri + '" alt="Project thumbnail">';
+          } else {
+            let existingImg = target.querySelector('img');
+            if (existingImg) { existingImg.src = dataUri; }
+            else { target.innerHTML = '<img src="' + dataUri + '" alt="Image">'; }
+          }
+          saveData();
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+      imageInput.value = '';
+    });
+
+    // ===== localStorage Persistence =====
+    function saveData() {
+      const data = { version: 3, lastSaved: new Date().toISOString(), sections: {}, images: {}, dynamicHTML: {} };
+
+      // Save text content
+      document.querySelectorAll('[data-editable]').forEach(el => {
+        if (el.id) data.sections[el.id] = el.innerHTML;
+      });
+
+      // Save tagline text
+      const taglineEl = document.querySelector('.tagline-text');
+      if (taglineEl) data.sections['hero-tagline-text'] = taglineEl.textContent;
+
+      // Save skill bars state
+      const skillItems = [];
+      document.querySelectorAll('.skill-bars .skill-item').forEach(item => {
+        const nameEl = item.querySelector('.skill-name');
+        const pctEl = item.querySelector('.skill-percent');
+        if (nameEl && pctEl) {
+          skillItems.push({ name: nameEl.textContent, pct: parseInt(pctEl.dataset.pct) || 0 });
+        }
+      });
+      data.dynamicHTML.skillItems = skillItems;
+
+      // Save tags
+      const tags = [];
+      document.querySelectorAll('#tags-cloud .tag').forEach(t => {
+        const clone = t.cloneNode(true);
+        const rm = clone.querySelector('.tag-remove');
+        if (rm) rm.remove();
+        tags.push(clone.textContent.trim());
+      });
+      data.dynamicHTML.tags = tags;
+
+      // Save dynamic sections as HTML
+      data.dynamicHTML.expTimeline = document.getElementById('exp-timeline')?.innerHTML || '';
+      data.dynamicHTML.eduTimeline = document.getElementById('edu-timeline')?.innerHTML || '';
+      data.dynamicHTML.certGrid = document.getElementById('cert-grid')?.innerHTML || '';
+      data.dynamicHTML.projectsGrid = document.getElementById('projects-grid')?.innerHTML || '';
+
+      // Save images
+      document.querySelectorAll('[data-image-editable]').forEach(el => {
+        const img = el.querySelector('img');
+        if (img && img.src.startsWith('data:')) {
+          const key = el.id || el.closest('[id]')?.id;
+          if (key) data.images[key] = { src: img.src, parentClass: el.className };
+        }
+      });
+
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+      catch (e) { console.warn('Could not save to localStorage:', e); }
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+
+    function restoreData() {
+      const data = loadData();
+      if (!data) return;
+
+      // Restore dynamic sections first
+      if (data.dynamicHTML) {
+        if (data.dynamicHTML.expTimeline) {
+          const el = document.getElementById('exp-timeline');
+          if (el) el.innerHTML = data.dynamicHTML.expTimeline;
+        }
+        if (data.dynamicHTML.eduTimeline) {
+          const el = document.getElementById('edu-timeline');
+          if (el) el.innerHTML = data.dynamicHTML.eduTimeline;
+        }
+        if (data.dynamicHTML.certGrid) {
+          const el = document.getElementById('cert-grid');
+          if (el) el.innerHTML = data.dynamicHTML.certGrid;
+        }
+        if (data.dynamicHTML.projectsGrid) {
+          const el = document.getElementById('projects-grid');
+          if (el) el.innerHTML = data.dynamicHTML.projectsGrid;
+        }
+
+        // Restore skill bars
+        if (data.dynamicHTML.skillItems && data.dynamicHTML.skillItems.length) {
+          const container = document.querySelector('.skill-bars');
+          const controls = container.querySelector('.section-controls');
+          container.querySelectorAll('.skill-item').forEach(el => el.remove());
+          data.dynamicHTML.skillItems.forEach(s => {
+            const item = document.createElement('div');
+            item.className = 'skill-item';
+            item.innerHTML = '<div class="skill-info">' +
+              '<span class="skill-name" data-editable="true">' + s.name + '</span>' +
+              '<span class="skill-percent" data-pct="' + s.pct + '">' + s.pct + '%</span>' +
+              '<div class="skill-item-controls">' +
+                '<button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>' +
+                '<button class="pct-btn" data-dir="+5" title="+5%">+</button>' +
+                '<button class="remove-btn" data-action="remove-skill" title="Remove">&times;</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="skill-bar-bg"><div class="skill-fill" data-percent="' + s.pct + '"></div></div>';
+            if (controls) controls.insertAdjacentElement('beforebegin', item);
+            else container.appendChild(item);
+          });
+        }
+
+        // Restore tags
+        if (data.dynamicHTML.tags && data.dynamicHTML.tags.length) {
+          const cloud = document.getElementById('tags-cloud');
+          if (cloud) {
+            cloud.innerHTML = '';
+            data.dynamicHTML.tags.forEach(t => {
+              const tag = document.createElement('span');
+              tag.className = 'tag';
+              tag.setAttribute('data-editable', 'true');
+              tag.innerHTML = t + '<span class="tag-remove" data-action="remove-tag">&times;</span>';
+              cloud.appendChild(tag);
+            });
+          }
+        }
+      }
+
+      // Restore text
+      if (data.sections) {
+        for (const [id, html] of Object.entries(data.sections)) {
+          if (id === 'hero-tagline-text') continue;
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = html;
+        }
+      }
+
+      // Restore images
+      if (data.images) {
+        for (const [id, info] of Object.entries(data.images)) {
+          const el = document.getElementById(id);
+          if (el && info.src) {
+            el.innerHTML = '<img src="' + info.src + '" alt="Image" style="width:100%;height:100%;object-fit:cover;">';
+          }
+        }
+      }
+    }
+    restoreData();
+
+    // Save before leaving
+    window.addEventListener('beforeunload', () => { if (isEditMode) saveData(); });
+
+    // ===== Save Button =====
+    document.getElementById('fabSave').addEventListener('click', () => { saveData(); showToast(); });
+
+    function showToast() {
+      const toast = document.getElementById('saveToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // ===== Export =====
+    document.getElementById('fabExport').addEventListener('click', () => {
+      saveData();
+      const clone = document.documentElement.cloneNode(true);
+
+      clone.querySelector('body').classList.remove('edit-mode');
+      clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+      clone.querySelectorAll('.editable-active').forEach(el => el.classList.remove('editable-active'));
+      const banner = clone.querySelector('.edit-banner');
+      if (banner) banner.classList.remove('show');
+
+      // Set tagline fully
+      const tagline = clone.querySelector('.tagline-text');
+      if (tagline) {
+        const data = loadData();
+        tagline.textContent = (data && data.sections && data.sections['hero-tagline-text']) || TAGLINE_TEXT;
+      }
+      const cursor = clone.querySelector('.hero-tagline .cursor');
+      if (cursor) cursor.style.display = 'none';
+
+      const toast = clone.querySelector('.save-toast');
+      if (toast) toast.classList.remove('show');
+
+      // Remove edit controls from export
+      clone.querySelectorAll('.section-controls').forEach(el => el.remove());
+      clone.querySelectorAll('.skill-item-controls').forEach(el => el.remove());
+      clone.querySelectorAll('.tag-remove').forEach(el => el.remove());
+      clone.querySelectorAll('.item-remove-btn').forEach(el => el.remove());
+
+      // Make sure skill bars have final widths
+      clone.querySelectorAll('.skill-fill').forEach(bar => {
+        bar.style.width = bar.dataset.percent + '%';
+      });
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resume.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+  })();
+  </script>
+</body>
+</html>
