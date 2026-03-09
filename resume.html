@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>My Resume</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" integrity="sha384-/rJKQnzOkEo+daG0jMjU1IwwY9unxt1NBw3Ef2fmOJ3PW/TfAg2KXVoWwMZQZtw9" crossorigin="anonymous">
   <style>
     /* ===== CSS Custom Properties ===== */
     :root {
@@ -1320,19 +1322,19 @@
       <div class="contact-content" data-aos="fade-up" data-aos-delay="100">
         <p id="contact-text" data-editable="true">I'm always open to discussing new projects, creative ideas, or opportunities to be part of something amazing. Feel free to reach out!</p>
         <div class="contact-links">
-          <a href="#" class="contact-link" id="contact-email" data-editable="true">
+          <a href="#" class="contact-link" id="contact-email" data-editable="true" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2 4 12 13 22 4"/></svg>
             your.email@example.com
           </a>
-          <a href="#" class="contact-link" id="contact-phone" data-editable="true">
+          <a href="#" class="contact-link" id="contact-phone" data-editable="true" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
             (555) 123-4567
           </a>
-          <a href="#" class="contact-link" id="contact-linkedin" data-editable="true">
+          <a href="#" class="contact-link" id="contact-linkedin" data-editable="true" rel="noopener noreferrer" target="_blank">
             <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn Profile
           </a>
-          <a href="#" class="contact-link" id="contact-github" data-editable="true">
+          <a href="#" class="contact-link" id="contact-github" data-editable="true" rel="noopener noreferrer" target="_blank">
             <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
             GitHub Profile
           </a>
@@ -1369,10 +1371,32 @@
   <!-- ===== HIDDEN FILE INPUT ===== -->
   <input type="file" id="imageUpload" accept="image/*" style="display:none">
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" integrity="sha384-wziAfh6b/qT+3LrqebF9WeK4+J5sehS6FA10J1t3a866kJ/fvU5UwofWnQyzLtwu" crossorigin="anonymous"></script>
   <script>
   (function() {
     'use strict';
+
+    // ===== HTML Sanitizer =====
+    // Strips dangerous tags and attributes from HTML before inserting into the DOM.
+    // This prevents XSS if localStorage data is ever tampered with (e.g. by a browser extension).
+    function sanitizeHTML(html) {
+      if (!html) return '';
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const FORBIDDEN_TAGS = ['script', 'iframe', 'object', 'embed', 'form', 'meta', 'link', 'base', 'svg'];
+      FORBIDDEN_TAGS.forEach(tag => doc.body.querySelectorAll(tag).forEach(el => el.remove()));
+      doc.body.querySelectorAll('*').forEach(el => {
+        Array.from(el.attributes).forEach(attr => {
+          const name = attr.name.toLowerCase();
+          const value = attr.value.toLowerCase().trim();
+          // Remove all event handlers and javascript: URLs
+          if (name.startsWith('on') || value.startsWith('javascript:') || value.startsWith('data:text/html')) {
+            el.removeAttribute(attr.name);
+          }
+        });
+      });
+      return doc.body.innerHTML;
+    }
 
     // ===== Config =====
     const STORAGE_KEY = 'resume_data_v3';
@@ -1806,24 +1830,24 @@
         if (data.dynamicHTML.expTimeline) {
           const el = document.getElementById('exp-timeline');
           if (el) {
-            el.innerHTML = data.dynamicHTML.expTimeline;
+            el.innerHTML = sanitizeHTML(data.dynamicHTML.expTimeline);
             el.querySelectorAll('.section-controls').forEach(c => c.remove());
           }
         }
         if (data.dynamicHTML.eduTimeline) {
           const el = document.getElementById('edu-timeline');
           if (el) {
-            el.innerHTML = data.dynamicHTML.eduTimeline;
+            el.innerHTML = sanitizeHTML(data.dynamicHTML.eduTimeline);
             el.querySelectorAll('.section-controls').forEach(c => c.remove());
           }
         }
         if (data.dynamicHTML.certGrid) {
           const el = document.getElementById('cert-grid');
-          if (el) el.innerHTML = data.dynamicHTML.certGrid;
+          if (el) el.innerHTML = sanitizeHTML(data.dynamicHTML.certGrid);
         }
         if (data.dynamicHTML.projectsGrid) {
           const el = document.getElementById('projects-grid');
-          if (el) el.innerHTML = data.dynamicHTML.projectsGrid;
+          if (el) el.innerHTML = sanitizeHTML(data.dynamicHTML.projectsGrid);
         }
 
         // Restore skill bars
@@ -1834,8 +1858,9 @@
           data.dynamicHTML.skillItems.forEach(s => {
             const item = document.createElement('div');
             item.className = 'skill-item';
+            const safeName = s.name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
             item.innerHTML = '<div class="skill-info">' +
-              '<span class="skill-name" data-editable="true">' + s.name + '</span>' +
+              '<span class="skill-name" data-editable="true">' + safeName + '</span>' +
               '<span class="skill-percent" data-pct="' + s.pct + '">' + s.pct + '%</span>' +
               '<div class="skill-item-controls">' +
                 '<button class="pct-btn" data-dir="-5" title="-5%">&minus;</button>' +
@@ -1858,7 +1883,8 @@
               const tag = document.createElement('span');
               tag.className = 'tag';
               tag.setAttribute('data-editable', 'true');
-              tag.innerHTML = t + '<span class="tag-remove" data-action="remove-tag">&times;</span>';
+              const safeTag = t.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+              tag.innerHTML = safeTag + '<span class="tag-remove" data-action="remove-tag">&times;</span>';
               cloud.appendChild(tag);
             });
           }
@@ -1869,7 +1895,7 @@
       if (data.sections) {
         for (const [id, html] of Object.entries(data.sections)) {
           const el = document.getElementById(id);
-          if (el) el.innerHTML = html;
+          if (el) el.innerHTML = sanitizeHTML(html);
         }
       }
 
@@ -1877,7 +1903,7 @@
       if (data.images) {
         for (const [id, info] of Object.entries(data.images)) {
           const el = document.getElementById(id);
-          if (el && info.src) {
+          if (el && info.src && info.src.startsWith('data:image/')) {
             el.innerHTML = '<img src="' + info.src + '" alt="Image" style="width:100%;height:100%;object-fit:cover;">';
           }
         }
