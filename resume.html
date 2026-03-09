@@ -180,9 +180,17 @@
       display: none;
       justify-content: center;
       gap: 10px;
-      margin-top: 18px;
+      margin-top: 28px;
+      padding: 8px 0;
+      position: relative;
+      z-index: 2;
     }
     .edit-mode .section-controls { display: flex; }
+    /* Full-width inside CSS grid containers */
+    .cert-grid > .section-controls,
+    .projects-grid > .section-controls {
+      grid-column: 1 / -1;
+    }
     .section-controls .ctrl-btn {
       padding: 8px 18px;
       border-radius: 50px;
@@ -446,23 +454,31 @@
       margin-bottom: 14px;
       opacity: 0.92;
     }
-    .hero-tagline {
+    .hero-quote {
       font-size: clamp(0.95rem, 2vw, 1.1rem);
       font-weight: 300;
+      font-style: italic;
       max-width: 520px;
-      margin: 0 auto;
-      min-height: 1.7em;
+      margin: 16px auto 0;
+      padding: 12px 20px 12px 24px;
+      border-left: 3px solid rgba(255,255,255,0.35);
+      color: rgba(220,210,255,0.88);
+      text-align: left;
+      min-height: 1.4em;
+      outline: none;
     }
-    .hero-tagline .cursor {
-      display: inline-block;
-      width: 2px;
-      height: 1.1em;
-      background: #fff;
-      vertical-align: text-bottom;
-      margin-left: 2px;
-      animation: blink 0.8s step-end infinite;
+    .hero-quote[data-placeholder]:empty::before {
+      content: attr(data-placeholder);
+      color: rgba(220,210,255,0.3);
+      font-style: italic;
+      pointer-events: none;
     }
-    @keyframes blink { 50% { opacity: 0; } }
+    .edit-mode .hero-quote[data-placeholder]:empty::before {
+      color: rgba(220,210,255,0.5);
+    }
+    .edit-mode .hero-quote {
+      border-color: rgba(255,255,255,0.5);
+    }
     .scroll-indicator {
       position: absolute;
       bottom: 30px;
@@ -963,9 +979,7 @@
       </div>
       <h1 id="hero-name" data-editable="true" data-aos="fade-up">Your Name</h1>
       <p class="hero-subtitle" id="hero-title" data-editable="true" data-aos="fade-up" data-aos-delay="100">Your Professional Title</p>
-      <p class="hero-tagline" id="hero-tagline" data-aos="fade-up" data-aos-delay="200">
-        <span class="tagline-text"></span><span class="cursor"></span>
-      </p>
+      <blockquote class="hero-quote" id="hero-quote" data-editable="true" data-aos="fade-up" data-aos-delay="200" data-placeholder="Add a personal quote or tagline..."></blockquote>
     </div>
     <div class="scroll-indicator">
       <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1012,35 +1026,9 @@
             </ul>
           </div>
         </div>
-        <div class="timeline-item" data-aos="fade-left" data-aos-delay="200">
-          <div class="glass-card timeline-card">
-            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
-            <span class="date" id="exp2-date" data-editable="true">2020 — 2023</span>
-            <h3 id="exp2-role" data-editable="true">Full Stack Developer</h3>
-            <h4 id="exp2-company" data-editable="true">StartupXYZ</h4>
-            <ul>
-              <li id="exp2-b1" data-editable="true">Built customer-facing web application serving 50K+ users</li>
-              <li id="exp2-b2" data-editable="true">Implemented real-time data processing pipeline</li>
-              <li id="exp2-b3" data-editable="true">Collaborated with design team to improve UX across the platform</li>
-            </ul>
-          </div>
-        </div>
-        <div class="timeline-item" data-aos="fade-right" data-aos-delay="300">
-          <div class="glass-card timeline-card">
-            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
-            <span class="date" id="exp3-date" data-editable="true">2018 — 2020</span>
-            <h3 id="exp3-role" data-editable="true">Junior Developer</h3>
-            <h4 id="exp3-company" data-editable="true">WebAgency Co.</h4>
-            <ul>
-              <li id="exp3-b1" data-editable="true">Developed responsive websites for 20+ clients</li>
-              <li id="exp3-b2" data-editable="true">Maintained and updated legacy codebases</li>
-              <li id="exp3-b3" data-editable="true">Participated in agile sprints and daily standups</li>
-            </ul>
-          </div>
-        </div>
-        <div class="section-controls">
-          <button class="ctrl-btn" data-action="add-experience">+ Add Experience</button>
-        </div>
+      </div>
+      <div class="section-controls">
+        <button class="ctrl-btn" data-action="add-experience">+ Add Experience</button>
       </div>
     </div>
   </section>
@@ -1068,21 +1056,9 @@
             </ul>
           </div>
         </div>
-        <div class="timeline-item" data-aos="fade-left" data-aos-delay="200">
-          <div class="glass-card timeline-card">
-            <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
-            <span class="date" id="edu2-date" data-editable="true">2022</span>
-            <h3 id="edu2-degree" data-editable="true">Full Stack Web Development Bootcamp</h3>
-            <h4 id="edu2-school" data-editable="true">Code Academy Online</h4>
-            <ul>
-              <li id="edu2-b1" data-editable="true">Completed 500+ hours of intensive training</li>
-              <li id="edu2-b2" data-editable="true">Built 10+ production-ready projects</li>
-            </ul>
-          </div>
-        </div>
-        <div class="section-controls">
-          <button class="ctrl-btn" data-action="add-education">+ Add Education</button>
-        </div>
+      </div>
+      <div class="section-controls">
+        <button class="ctrl-btn" data-action="add-education">+ Add Education</button>
       </div>
     </div>
   </section>
@@ -1400,7 +1376,6 @@
 
     // ===== Config =====
     const STORAGE_KEY = 'resume_data_v3';
-    const TAGLINE_TEXT = 'Crafting digital experiences that inspire and delight.';
     let isEditMode = false;
     let currentImageTarget = null;
     let idCounter = Date.now();
@@ -1423,29 +1398,6 @@
       }
     }
     createHeroParticles();
-
-    // ===== Typing Effect =====
-    function startTyping() {
-      const el = document.querySelector('.tagline-text');
-      if (!el) return;
-      const saved = loadData();
-      const text = (saved && saved.sections && saved.sections['hero-tagline-text']) || TAGLINE_TEXT;
-      let i = 0;
-      el.textContent = '';
-      const interval = setInterval(() => {
-        if (i < text.length) {
-          el.textContent += text.charAt(i);
-          i++;
-        } else {
-          clearInterval(interval);
-          setTimeout(() => {
-            const cursor = document.querySelector('.hero-tagline .cursor');
-            if (cursor) cursor.style.display = 'none';
-          }, 2000);
-        }
-      }, 45);
-    }
-    startTyping();
 
     // ===== Navbar =====
     const navbar = document.querySelector('.navbar');
@@ -1646,7 +1598,7 @@
           '<h4 data-editable="true">Company Name</h4>' +
           '<ul><li data-editable="true">Describe your achievement here</li></ul>' +
         '</div>';
-        addExp.closest('.section-controls').insertAdjacentElement('beforebegin', item);
+        document.getElementById('exp-timeline').appendChild(item);
         saveData();
         return;
       }
@@ -1664,7 +1616,7 @@
           '<h4 data-editable="true">Institution Name</h4>' +
           '<ul><li data-editable="true">Notable achievement</li></ul>' +
         '</div>';
-        addEdu.closest('.section-controls').insertAdjacentElement('beforebegin', item);
+        document.getElementById('edu-timeline').appendChild(item);
         saveData();
         return;
       }
@@ -1798,10 +1750,6 @@
         if (el.id) data.sections[el.id] = el.innerHTML;
       });
 
-      // Save tagline text
-      const taglineEl = document.querySelector('.tagline-text');
-      if (taglineEl) data.sections['hero-tagline-text'] = taglineEl.textContent;
-
       // Save skill bars state
       const skillItems = [];
       document.querySelectorAll('.skill-bars .skill-item').forEach(item => {
@@ -1857,11 +1805,17 @@
       if (data.dynamicHTML) {
         if (data.dynamicHTML.expTimeline) {
           const el = document.getElementById('exp-timeline');
-          if (el) el.innerHTML = data.dynamicHTML.expTimeline;
+          if (el) {
+            el.innerHTML = data.dynamicHTML.expTimeline;
+            el.querySelectorAll('.section-controls').forEach(c => c.remove());
+          }
         }
         if (data.dynamicHTML.eduTimeline) {
           const el = document.getElementById('edu-timeline');
-          if (el) el.innerHTML = data.dynamicHTML.eduTimeline;
+          if (el) {
+            el.innerHTML = data.dynamicHTML.eduTimeline;
+            el.querySelectorAll('.section-controls').forEach(c => c.remove());
+          }
         }
         if (data.dynamicHTML.certGrid) {
           const el = document.getElementById('cert-grid');
@@ -1914,7 +1868,6 @@
       // Restore text
       if (data.sections) {
         for (const [id, html] of Object.entries(data.sections)) {
-          if (id === 'hero-tagline-text') continue;
           const el = document.getElementById(id);
           if (el) el.innerHTML = html;
         }
@@ -1954,15 +1907,6 @@
       clone.querySelectorAll('.editable-active').forEach(el => el.classList.remove('editable-active'));
       const banner = clone.querySelector('.edit-banner');
       if (banner) banner.classList.remove('show');
-
-      // Set tagline fully
-      const tagline = clone.querySelector('.tagline-text');
-      if (tagline) {
-        const data = loadData();
-        tagline.textContent = (data && data.sections && data.sections['hero-tagline-text']) || TAGLINE_TEXT;
-      }
-      const cursor = clone.querySelector('.hero-tagline .cursor');
-      if (cursor) cursor.style.display = 'none';
 
       const toast = clone.querySelector('.save-toast');
       if (toast) toast.classList.remove('show');
