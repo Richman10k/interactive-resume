@@ -1071,14 +1071,6 @@
       margin-top: 8px;
     }
     .color-panel .reset-all-btn:hover { background: rgba(245,87,108,0.08); }
-    .color-panel .undo-reset-btn {
-      width: 100%; padding: 8px; border: 1px dashed rgba(67,233,123,0.6);
-      background: none; border-radius: 50px; color: #1ab55a;
-      font-size: 0.8rem; font-weight: 500; cursor: pointer; font-family: var(--font); transition: var(--transition);
-      margin-top: 6px; display: none;
-    }
-    .color-panel .undo-reset-btn:hover { background: rgba(67,233,123,0.08); }
-    .color-panel .undo-reset-btn.show { display: block; }
 
     /* ===== Drag & Drop ===== */
     .drag-mode .timeline-item,
@@ -1631,7 +1623,6 @@
     <button class="reset-btn" id="resetColors">Reset Colors to Default</button>
     <div class="panel-divider" style="margin-top:12px;"></div>
     <button class="reset-all-btn" id="resetAllDefault">Reset All Content to Default</button>
-    <button class="undo-reset-btn" id="undoReset">↩ Undo Reset</button>
   </div>
 
   <!-- ===== ELEMENT COLOR POPOVER ===== -->
@@ -2450,37 +2441,11 @@
     });
 
     // ===== Reset All to Default =====
-    const UNDO_KEY = 'resume_reset_undo';
-
-    // Show undo button if a reset was just done
-    if (sessionStorage.getItem(UNDO_KEY)) {
-      const undoBtn = document.getElementById('undoReset');
-      if (undoBtn) undoBtn.classList.add('show');
-    }
-
     document.getElementById('resetAllDefault').addEventListener('click', () => {
-      if (!confirm('Reset ALL content and colors to defaults? This will erase all your edits.\n\nYou can undo this immediately after.')) return;
-      const undoState = {
-        resume: localStorage.getItem(STORAGE_KEY),
-        colors: localStorage.getItem(COLOR_KEY)
-      };
-      sessionStorage.setItem(UNDO_KEY, JSON.stringify(undoState));
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(COLOR_KEY);
-      window.location.reload();
-    });
-
-    document.getElementById('undoReset').addEventListener('click', () => {
-      const raw = sessionStorage.getItem(UNDO_KEY);
-      if (!raw) return;
-      try {
-        const undoState = JSON.parse(raw);
-        if (undoState.resume) localStorage.setItem(STORAGE_KEY, undoState.resume);
-        else localStorage.removeItem(STORAGE_KEY);
-        if (undoState.colors) localStorage.setItem(COLOR_KEY, undoState.colors);
-        else localStorage.removeItem(COLOR_KEY);
-      } catch(e) {}
-      sessionStorage.removeItem(UNDO_KEY);
+      if (!confirm('Reset ALL content and colors to defaults? This will permanently erase all your edits.')) return;
+      isEditMode = false;
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.reload();
     });
 
