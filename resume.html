@@ -37,7 +37,7 @@
 
     /* ===== Reset & Base ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     body {
       font-family: var(--font);
       color: var(--text-primary);
@@ -1867,6 +1867,8 @@
 
     // ===== Config =====
     const STORAGE_KEY = 'resume_data_v3';
+    // Detect published/preview mode (edit UI elements are stripped)
+    const isViewMode = !document.getElementById('fabEdit');
     let isEditMode = false;
     let currentImageTarget = null;
     let idCounter = Date.now();
@@ -1900,7 +1902,19 @@
     });
     hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
     navLinks.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => navLinks.classList.remove('open'));
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            const offset = navbar ? navbar.offsetHeight : 70;
+            const top = target.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+        }
+        navLinks.classList.remove('open');
+      });
     });
 
     // Active nav link on scroll
@@ -1936,6 +1950,12 @@
       });
     }, { threshold: 0.25 });
     if (skillsSection) observerSkills.observe(skillsSection);
+
+    // ===== Restore data & exit early in published/view mode =====
+    restoreData();
+    if (typeof AOS !== 'undefined') AOS.refresh();
+    updateContactHrefs();
+    if (isViewMode) return; // published page needs nothing more
 
     // ===== Edit Mode =====
     const fabEdit = document.getElementById('fabEdit');
@@ -2601,9 +2621,6 @@
         }
       }
     }
-    restoreData();
-    updateContactHrefs();
-
     // Save before leaving
     window.addEventListener('beforeunload', () => { if (isEditMode) saveData(); });
 
@@ -2656,7 +2673,7 @@
       URL.revokeObjectURL(url);
     });
 
-    // ===== Enhanced Edit Mode (Style Studio) =====
+    // ===== Enhanced Edit Mode (Style Studio) + Publish — editor only =====
     const COLOR_KEY = 'resume_colors_v1';
     const PUBLISHED_KEY = 'resume_published_v1';
     let isEnhancedMode = false;
@@ -3063,7 +3080,6 @@
     });
 
     // Close color panel + popover when exiting edit mode
-    const _origFabEditClick = fabEdit.onclick;
     fabEdit.addEventListener('click', () => {
       if (isEditMode) { // about to turn off
         if (isEnhancedMode) {
@@ -3076,6 +3092,7 @@
         }
       }
     });
+
 
   })();
   </script>
