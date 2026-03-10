@@ -822,6 +822,135 @@
     .contact-url-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
     .edit-mode .contact-url-btn { display: flex; }
 
+    /* ===== Card URL Button (edit mode) ===== */
+    .card-url-btn {
+      display: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background-color: var(--primary);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71'/%3E%3Cpath d='M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 14px 14px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+      z-index: 5;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-url-btn:hover { opacity: 1; transform: scale(1.1); }
+    [data-card-url] .card-url-btn { background-color: var(--primary-dark); opacity: 1; }
+    .edit-mode .card-url-btn { display: flex; }
+
+    /* ===== Card URL Indicator (view mode, when URL is set) ===== */
+    .card-url-indicator {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71'/%3E%3Cpath d='M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+      z-index: 3;
+      pointer-events: none;
+    }
+    body:not(.edit-mode) [data-card-url] .card-url-indicator { display: flex; }
+    body:not(.edit-mode) [data-card-url]:hover .card-url-indicator { opacity: 1; }
+    body:not(.edit-mode) [data-card-url] { cursor: pointer; }
+
+    /* ===== Card Field Remove Button ===== */
+    .card-field-remove {
+      display: none;
+      background: none;
+      border: none;
+      color: #f5576c;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 3px;
+      margin-left: 3px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      line-height: 1;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .card-field-remove:hover { opacity: 1; }
+    .edit-mode .card-field-remove { display: inline-flex; align-items: center; }
+
+    /* ===== Cert Field Wrapper ===== */
+    .cert-field-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ===== Card Inline Controls (add field/tag inside card) ===== */
+    .card-controls {
+      display: none;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(102,126,234,0.2);
+    }
+    .edit-mode .card-controls { display: flex; }
+    .card-controls .ctrl-btn {
+      padding: 4px 13px;
+      border-radius: 50px;
+      border: 2px dashed rgba(102,126,234,0.4);
+      background: rgba(255,255,255,0.7);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font);
+    }
+    .card-controls .ctrl-btn:hover { background: var(--primary); color: #fff; border-style: solid; }
+
+    /* ===== Project Tag Remove Button ===== */
+    .proj-tag-remove {
+      display: none;
+      margin-left: 5px;
+      cursor: pointer;
+      opacity: 0.65;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: #f5576c;
+      line-height: 1;
+      transition: opacity 0.2s;
+    }
+    .proj-tag-remove:hover { opacity: 1; }
+    .edit-mode .proj-tag-remove { display: inline; }
+
+    /* ===== Project Field Wrapper ===== */
+    .proj-field-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+    .proj-field-wrap p { flex: 1; margin: 0; }
+
     /* ===== Contact URL Popup ===== */
     .contact-url-popup {
       display: none;
@@ -1432,53 +1561,68 @@
       <div class="cert-grid" id="cert-grid">
         <div class="cert-card" data-aos="zoom-in" data-aos-delay="100">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="cert-badge cert-badge-1" id="cert1-badge" data-image-editable="true">
             <span>AWS</span>
           </div>
           <h3 id="cert1-name" data-editable="true">AWS Solutions Architect</h3>
-          <p class="cert-issuer" id="cert1-issuer" data-editable="true">Amazon Web Services</p>
-          <p class="cert-date" id="cert1-date" data-editable="true">Issued: Jan 2024 · Valid through Jan 2027</p>
-          <p class="cert-id" id="cert1-id" data-editable="true">Credential ID: ABC-123456</p>
+          <p class="cert-field-wrap cert-issuer"><span id="cert1-issuer" data-editable="true">Amazon Web Services</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-date"><span id="cert1-date" data-editable="true">Issued: Jan 2024 · Valid through Jan 2027</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-id"><span id="cert1-id" data-editable="true">Credential ID: ABC-123456</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <div class="card-controls"><button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button></div>
         </div>
         <div class="cert-card" data-aos="zoom-in" data-aos-delay="200">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="cert-badge cert-badge-2" id="cert2-badge" data-image-editable="true">
             <span>GCP</span>
           </div>
           <h3 id="cert2-name" data-editable="true">Google Cloud Professional</h3>
-          <p class="cert-issuer" id="cert2-issuer" data-editable="true">Google Cloud</p>
-          <p class="cert-date" id="cert2-date" data-editable="true">Issued: Mar 2023 · Valid through Mar 2026</p>
-          <p class="cert-id" id="cert2-id" data-editable="true">Credential ID: GCP-789012</p>
+          <p class="cert-field-wrap cert-issuer"><span id="cert2-issuer" data-editable="true">Google Cloud</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-date"><span id="cert2-date" data-editable="true">Issued: Mar 2023 · Valid through Mar 2026</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-id"><span id="cert2-id" data-editable="true">Credential ID: GCP-789012</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <div class="card-controls"><button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button></div>
         </div>
         <div class="cert-card" data-aos="zoom-in" data-aos-delay="300">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="cert-badge cert-badge-3" id="cert3-badge" data-image-editable="true">
             <span>PMP</span>
           </div>
           <h3 id="cert3-name" data-editable="true">Project Management Professional</h3>
-          <p class="cert-issuer" id="cert3-issuer" data-editable="true">Project Management Institute</p>
-          <p class="cert-date" id="cert3-date" data-editable="true">Issued: Jun 2023</p>
-          <p class="cert-id" id="cert3-id" data-editable="true">Credential ID: PMP-345678</p>
+          <p class="cert-field-wrap cert-issuer"><span id="cert3-issuer" data-editable="true">Project Management Institute</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-date"><span id="cert3-date" data-editable="true">Issued: Jun 2023</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-id"><span id="cert3-id" data-editable="true">Credential ID: PMP-345678</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <div class="card-controls"><button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button></div>
         </div>
         <div class="cert-card" data-aos="zoom-in" data-aos-delay="400">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="cert-badge cert-badge-4" id="cert4-badge" data-image-editable="true">
             <span>CSM</span>
           </div>
           <h3 id="cert4-name" data-editable="true">Certified Scrum Master</h3>
-          <p class="cert-issuer" id="cert4-issuer" data-editable="true">Scrum Alliance</p>
-          <p class="cert-date" id="cert4-date" data-editable="true">Issued: Sep 2022</p>
-          <p class="cert-id" id="cert4-id" data-editable="true">Credential ID: CSM-901234</p>
+          <p class="cert-field-wrap cert-issuer"><span id="cert4-issuer" data-editable="true">Scrum Alliance</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-date"><span id="cert4-date" data-editable="true">Issued: Sep 2022</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-id"><span id="cert4-id" data-editable="true">Credential ID: CSM-901234</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <div class="card-controls"><button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button></div>
         </div>
         <div class="cert-card" data-aos="zoom-in" data-aos-delay="500">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="cert-badge cert-badge-5" id="cert5-badge" data-image-editable="true">
             <span>AZ</span>
           </div>
           <h3 id="cert5-name" data-editable="true">Microsoft Azure Fundamentals</h3>
-          <p class="cert-issuer" id="cert5-issuer" data-editable="true">Microsoft</p>
-          <p class="cert-date" id="cert5-date" data-editable="true">Issued: Nov 2023</p>
-          <p class="cert-id" id="cert5-id" data-editable="true">Credential ID: AZ-567890</p>
+          <p class="cert-field-wrap cert-issuer"><span id="cert5-issuer" data-editable="true">Microsoft</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-date"><span id="cert5-date" data-editable="true">Issued: Nov 2023</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <p class="cert-field-wrap cert-id"><span id="cert5-id" data-editable="true">Credential ID: AZ-567890</span><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>
+          <div class="card-controls"><button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button></div>
         </div>
         <div class="section-controls">
           <button class="ctrl-btn" data-action="add-cert">+ Add Certification</button>
@@ -1613,47 +1757,56 @@
       <div class="projects-grid" id="projects-grid">
         <div class="glass-card project-card" data-aos="fade-up" data-aos-delay="100">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="project-thumb" id="proj1-thumb" data-image-editable="true">
             <div class="placeholder-gradient pg-1">&#9672;</div>
           </div>
           <div class="project-body">
             <h3 id="proj1-title" data-editable="true">E-Commerce Platform</h3>
-            <p id="proj1-desc" data-editable="true">A full-stack e-commerce application with real-time inventory management, payment processing, and an admin dashboard.</p>
+            <div class="proj-field-wrap"><p id="proj1-desc" data-editable="true">A full-stack e-commerce application with real-time inventory management, payment processing, and an admin dashboard.</p><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></div>
             <div class="project-tags">
-              <span id="proj1-t1" data-editable="true">React</span>
-              <span id="proj1-t2" data-editable="true">Node.js</span>
-              <span id="proj1-t3" data-editable="true">MongoDB</span>
+              <span id="proj1-t1" data-editable="true">React<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
+              <span id="proj1-t2" data-editable="true">Node.js<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
+              <span id="proj1-t3" data-editable="true">MongoDB<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
             </div>
+            <div class="card-controls"><button class="ctrl-btn" data-action="add-proj-tag">＋ Add Tag</button></div>
           </div>
         </div>
         <div class="glass-card project-card" data-aos="fade-up" data-aos-delay="200">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="project-thumb" id="proj2-thumb" data-image-editable="true">
             <div class="placeholder-gradient pg-2">&#9672;</div>
           </div>
           <div class="project-body">
             <h3 id="proj2-title" data-editable="true">Task Management App</h3>
-            <p id="proj2-desc" data-editable="true">A collaborative project management tool with drag-and-drop boards, real-time updates, and team chat integration.</p>
+            <div class="proj-field-wrap"><p id="proj2-desc" data-editable="true">A collaborative project management tool with drag-and-drop boards, real-time updates, and team chat integration.</p><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></div>
             <div class="project-tags">
-              <span id="proj2-t1" data-editable="true">Next.js</span>
-              <span id="proj2-t2" data-editable="true">PostgreSQL</span>
-              <span id="proj2-t3" data-editable="true">WebSocket</span>
+              <span id="proj2-t1" data-editable="true">Next.js<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
+              <span id="proj2-t2" data-editable="true">PostgreSQL<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
+              <span id="proj2-t3" data-editable="true">WebSocket<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
             </div>
+            <div class="card-controls"><button class="ctrl-btn" data-action="add-proj-tag">＋ Add Tag</button></div>
           </div>
         </div>
         <div class="glass-card project-card" data-aos="fade-up" data-aos-delay="300">
           <button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>
+          <button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>
+          <div class="card-url-indicator"></div>
           <div class="project-thumb" id="proj3-thumb" data-image-editable="true">
             <div class="placeholder-gradient pg-3">&#9672;</div>
           </div>
           <div class="project-body">
             <h3 id="proj3-title" data-editable="true">AI Chat Assistant</h3>
-            <p id="proj3-desc" data-editable="true">An intelligent chatbot powered by large language models with context-aware responses and multi-language support.</p>
+            <div class="proj-field-wrap"><p id="proj3-desc" data-editable="true">An intelligent chatbot powered by large language models with context-aware responses and multi-language support.</p><button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></div>
             <div class="project-tags">
-              <span id="proj3-t1" data-editable="true">Python</span>
-              <span id="proj3-t2" data-editable="true">FastAPI</span>
-              <span id="proj3-t3" data-editable="true">LLMs</span>
+              <span id="proj3-t1" data-editable="true">Python<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
+              <span id="proj3-t2" data-editable="true">FastAPI<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
+              <span id="proj3-t3" data-editable="true">LLMs<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>
             </div>
+            <div class="card-controls"><button class="ctrl-btn" data-action="add-proj-tag">＋ Add Tag</button></div>
           </div>
         </div>
         <div class="section-controls">
@@ -1950,8 +2103,20 @@
 
     // ===== Restore data & exit early in published/view mode =====
     restoreData();
+    initCardUI();
     if (typeof AOS !== 'undefined') AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
     updateContactHrefs();
+
+    // ===== Card URL navigation (works in both view and edit mode) =====
+    document.body.addEventListener('click', (e) => {
+      if (isEditMode) return;
+      const card = e.target.closest('.cert-card[data-card-url], .project-card[data-card-url]');
+      if (card) {
+        const url = card.getAttribute('data-card-url');
+        if (url && isSafeUrl(url)) window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    });
+
     if (isViewMode) return; // published page needs nothing more
 
     // ===== Edit Mode =====
@@ -2075,6 +2240,63 @@
         return;
       }
 
+      // --- Set card URL ---
+      const setCardUrl = e.target.closest('[data-action="set-card-url"]');
+      if (setCardUrl) {
+        e.stopPropagation();
+        const card = setCardUrl.closest('.cert-card, .project-card');
+        if (card) openCardUrlPopup(card, setCardUrl);
+        return;
+      }
+
+      // --- Remove card field (cert or project) ---
+      const removeCardField = e.target.closest('[data-action="remove-card-field"]');
+      if (removeCardField) {
+        e.stopPropagation();
+        const wrap = removeCardField.closest('.cert-field-wrap, .proj-field-wrap');
+        if (wrap) { wrap.remove(); saveData(); }
+        return;
+      }
+
+      // --- Add cert field ---
+      const addCertField = e.target.closest('[data-action="add-cert-field"]');
+      if (addCertField) {
+        e.stopPropagation();
+        const controls = addCertField.closest('.card-controls');
+        const p = document.createElement('p');
+        p.className = 'cert-field-wrap';
+        p.innerHTML = '<span data-editable="true">New field</span>' +
+          '<button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button>';
+        controls.insertAdjacentElement('beforebegin', p);
+        saveData();
+        return;
+      }
+
+      // --- Remove project tag ---
+      const removeProjTag = e.target.closest('[data-action="remove-proj-tag"]');
+      if (removeProjTag) {
+        e.stopPropagation();
+        removeProjTag.closest('[data-editable]')?.remove();
+        saveData();
+        return;
+      }
+
+      // --- Add project tag ---
+      const addProjTag = e.target.closest('[data-action="add-proj-tag"]');
+      if (addProjTag) {
+        e.stopPropagation();
+        const card = addProjTag.closest('.project-card');
+        const tagsDiv = card?.querySelector('.project-tags');
+        if (tagsDiv) {
+          const span = document.createElement('span');
+          span.setAttribute('data-editable', 'true');
+          span.innerHTML = 'New Tag<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span>';
+          tagsDiv.appendChild(span);
+          saveData();
+        }
+        return;
+      }
+
       // --- Generic remove item (works for any card with the X button) ---
       const removeItem = e.target.closest('[data-action="remove-item"]');
       if (removeItem) {
@@ -2166,12 +2388,19 @@
         const color = colors[grid.querySelectorAll('.cert-card').length % colors.length];
         const card = document.createElement('div');
         card.className = 'cert-card';
-        card.innerHTML = '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+        card.innerHTML =
+          '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+          '<button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>' +
+          '<div class="card-url-indicator"></div>' +
           '<div class="cert-badge ' + color + '" data-image-editable="true"><span>NEW</span></div>' +
           '<h3 data-editable="true">Certification Name</h3>' +
-          '<p class="cert-issuer" data-editable="true">Issuing Organization</p>' +
-          '<p class="cert-date" data-editable="true">Issued: Month Year</p>' +
-          '<p class="cert-id" data-editable="true">Credential ID: XXX-XXXXXX</p>';
+          '<p class="cert-field-wrap cert-issuer"><span data-editable="true">Issuing Organization</span>' +
+            '<button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>' +
+          '<p class="cert-field-wrap cert-date"><span data-editable="true">Issued: Month Year</span>' +
+            '<button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>' +
+          '<p class="cert-field-wrap cert-id"><span data-editable="true">Credential ID: XXX-XXXXXX</span>' +
+            '<button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></p>' +
+          '<div class="card-controls"><button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button></div>';
         addCert.closest('.section-controls').insertAdjacentElement('beforebegin', card);
         saveData();
         return;
@@ -2183,13 +2412,20 @@
         e.stopPropagation();
         const card = document.createElement('div');
         card.className = 'glass-card project-card';
-        card.innerHTML = '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+        card.innerHTML =
+          '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
+          '<button class="card-url-btn" data-action="set-card-url" title="Set card link"></button>' +
+          '<div class="card-url-indicator"></div>' +
           '<div class="project-thumb" data-image-editable="true">' +
-          '<div class="placeholder-gradient pg-1">&#9672;</div></div>' +
+            '<div class="placeholder-gradient pg-1">&#9672;</div></div>' +
           '<div class="project-body">' +
-          '<h3 data-editable="true">Project Title</h3>' +
-          '<p data-editable="true">Describe your project here.</p>' +
-          '<div class="project-tags"><span data-editable="true">Tech</span></div>' +
+            '<h3 data-editable="true">Project Title</h3>' +
+            '<div class="proj-field-wrap"><p data-editable="true">Describe your project here.</p>' +
+              '<button class="card-field-remove" data-action="remove-card-field" title="Remove field">&times;</button></div>' +
+            '<div class="project-tags">' +
+              '<span data-editable="true">Tech<span class="proj-tag-remove" data-action="remove-proj-tag">&times;</span></span>' +
+            '</div>' +
+            '<div class="card-controls"><button class="ctrl-btn" data-action="add-proj-tag">＋ Add Tag</button></div>' +
           '</div>';
         addProj.closest('.section-controls').insertAdjacentElement('beforebegin', card);
         saveData();
@@ -2254,6 +2490,7 @@
 
     // ===== Contact URL Popup =====
     let activeContactId = null;
+    let activeCardTarget = null;
     const contactUrlPopup = document.getElementById('contactUrlPopup');
     const contactUrlInput = document.getElementById('contactUrlInput');
     const contactUrlError = document.getElementById('contactUrlError');
@@ -2287,10 +2524,60 @@
     function closeContactUrlPopup() {
       contactUrlPopup.style.display = 'none';
       activeContactId = null;
+      activeCardTarget = null;
+    }
+
+    function openCardUrlPopup(card, btn) {
+      activeContactId = null;
+      activeCardTarget = card;
+      const currentUrl = card.getAttribute('data-card-url') || '';
+      contactUrlInput.value = currentUrl;
+      contactUrlError.style.display = 'none';
+      // Update label and hint for card context
+      const label = contactUrlPopup.querySelector('.contact-url-popup-label');
+      const hint = contactUrlPopup.querySelector('.contact-url-hint');
+      if (label) label.textContent = 'Card Link URL';
+      if (hint) hint.textContent = 'Paste a URL to make this card clickable. Leave blank to remove the link.';
+
+      const rect = btn.getBoundingClientRect();
+      contactUrlPopup.style.display = 'block';
+      const popupW = contactUrlPopup.offsetWidth || 290;
+      let top = rect.bottom + 8;
+      let left = rect.right + 8;
+      if (left + popupW > window.innerWidth - 10) left = rect.left - popupW - 8;
+      if (left < 10) left = 10;
+      if (top + 160 > window.innerHeight) top = rect.top - 160 - 8;
+      contactUrlPopup.style.top = top + 'px';
+      contactUrlPopup.style.left = left + 'px';
+      contactUrlInput.focus();
+      contactUrlInput.select();
     }
 
     function applyContactUrl() {
       const url = contactUrlInput.value.trim();
+
+      // --- Card URL mode ---
+      if (activeCardTarget) {
+        if (url === '') {
+          activeCardTarget.removeAttribute('data-card-url');
+        } else if (!isSafeUrl(url)) {
+          contactUrlError.style.display = 'block';
+          contactUrlInput.focus();
+          return;
+        } else {
+          activeCardTarget.setAttribute('data-card-url', url);
+        }
+        // Restore popup label/hint to contact defaults
+        const label = contactUrlPopup.querySelector('.contact-url-popup-label');
+        const hint = contactUrlPopup.querySelector('.contact-url-hint');
+        if (label) label.textContent = 'Link URL';
+        if (hint) hint.textContent = 'Paste any URL to make this contact card clickable. Leave blank to remove the link.';
+        closeContactUrlPopup();
+        saveData();
+        return;
+      }
+
+      // --- Contact URL mode ---
       const anchor = document.getElementById(activeContactId);
       if (!anchor) { closeContactUrlPopup(); return; }
 
@@ -2325,7 +2612,14 @@
     }
 
     contactUrlApply.addEventListener('click', applyContactUrl);
-    contactUrlCancel.addEventListener('click', closeContactUrlPopup);
+    contactUrlCancel.addEventListener('click', () => {
+      // Restore popup label/hint to contact defaults on cancel
+      const label = contactUrlPopup.querySelector('.contact-url-popup-label');
+      const hint = contactUrlPopup.querySelector('.contact-url-hint');
+      if (label) label.textContent = 'Link URL';
+      if (hint) hint.textContent = 'Paste any URL to make this contact card clickable. Leave blank to remove the link.';
+      closeContactUrlPopup();
+    });
     contactUrlInput.addEventListener('keydown', (e) => {
       contactUrlError.style.display = 'none';
       if (e.key === 'Enter') { e.preventDefault(); applyContactUrl(); }
@@ -2336,7 +2630,13 @@
     document.addEventListener('click', (e) => {
       if (contactUrlPopup.style.display === 'block' &&
           !contactUrlPopup.contains(e.target) &&
-          !e.target.closest('.contact-url-btn')) {
+          !e.target.closest('.contact-url-btn') &&
+          !e.target.closest('.card-url-btn')) {
+        // Restore popup label/hint to contact defaults
+        const label = contactUrlPopup.querySelector('.contact-url-popup-label');
+        const hint = contactUrlPopup.querySelector('.contact-url-hint');
+        if (label) label.textContent = 'Link URL';
+        if (hint) hint.textContent = 'Paste any URL to make this contact card clickable. Leave blank to remove the link.';
         closeContactUrlPopup();
       }
     });
@@ -2503,6 +2803,104 @@
       }
     }
 
+    // Ensure all cert/project cards have the latest UI elements (migration for old saved data)
+    function initCardUI() {
+      document.querySelectorAll('.cert-card').forEach(card => {
+        // Add card-url-btn if missing
+        if (!card.querySelector('.card-url-btn')) {
+          const btn = document.createElement('button');
+          btn.className = 'card-url-btn';
+          btn.setAttribute('data-action', 'set-card-url');
+          btn.setAttribute('title', 'Set card link');
+          card.insertBefore(btn, card.firstChild);
+        }
+        // Add card-url-indicator if missing
+        if (!card.querySelector('.card-url-indicator')) {
+          const ind = document.createElement('div');
+          ind.className = 'card-url-indicator';
+          card.insertBefore(ind, card.querySelector('.cert-badge') || card.firstChild);
+        }
+        // Wrap bare p[data-editable] fields in cert-field-wrap (old format migration)
+        card.querySelectorAll('p[data-editable]').forEach(p => {
+          const wrap = document.createElement('p');
+          wrap.className = 'cert-field-wrap ' + Array.from(p.classList).join(' ');
+          const span = document.createElement('span');
+          span.setAttribute('data-editable', 'true');
+          if (p.id) { span.id = p.id; }
+          span.innerHTML = p.innerHTML;
+          const rmBtn = document.createElement('button');
+          rmBtn.className = 'card-field-remove';
+          rmBtn.setAttribute('data-action', 'remove-card-field');
+          rmBtn.setAttribute('title', 'Remove field');
+          rmBtn.innerHTML = '&times;';
+          wrap.appendChild(span);
+          wrap.appendChild(rmBtn);
+          p.parentNode.replaceChild(wrap, p);
+        });
+        // Add card-controls if missing
+        if (!card.querySelector('.card-controls')) {
+          const ctrl = document.createElement('div');
+          ctrl.className = 'card-controls';
+          ctrl.innerHTML = '<button class="ctrl-btn" data-action="add-cert-field">＋ Add Field</button>';
+          card.appendChild(ctrl);
+        }
+      });
+
+      document.querySelectorAll('.project-card').forEach(card => {
+        // Add card-url-btn if missing
+        if (!card.querySelector('.card-url-btn')) {
+          const btn = document.createElement('button');
+          btn.className = 'card-url-btn';
+          btn.setAttribute('data-action', 'set-card-url');
+          btn.setAttribute('title', 'Set card link');
+          card.insertBefore(btn, card.firstChild);
+        }
+        // Add card-url-indicator if missing
+        if (!card.querySelector('.card-url-indicator')) {
+          const ind = document.createElement('div');
+          ind.className = 'card-url-indicator';
+          card.insertBefore(ind, card.querySelector('.project-thumb') || card.firstChild);
+        }
+        const body = card.querySelector('.project-body');
+        if (body) {
+          // Wrap bare p[data-editable] description in proj-field-wrap (old format migration)
+          body.querySelectorAll(':scope > p[data-editable]').forEach(p => {
+            const wrap = document.createElement('div');
+            wrap.className = 'proj-field-wrap';
+            const newP = document.createElement('p');
+            newP.setAttribute('data-editable', 'true');
+            if (p.id) newP.id = p.id;
+            newP.innerHTML = p.innerHTML;
+            const rmBtn = document.createElement('button');
+            rmBtn.className = 'card-field-remove';
+            rmBtn.setAttribute('data-action', 'remove-card-field');
+            rmBtn.setAttribute('title', 'Remove field');
+            rmBtn.innerHTML = '&times;';
+            wrap.appendChild(newP);
+            wrap.appendChild(rmBtn);
+            p.parentNode.replaceChild(wrap, p);
+          });
+          // Add proj-tag-remove to existing tags if missing
+          body.querySelectorAll('.project-tags span[data-editable]').forEach(span => {
+            if (!span.querySelector('.proj-tag-remove')) {
+              const rm = document.createElement('span');
+              rm.className = 'proj-tag-remove';
+              rm.setAttribute('data-action', 'remove-proj-tag');
+              rm.innerHTML = '&times;';
+              span.appendChild(rm);
+            }
+          });
+          // Add card-controls if missing
+          if (!body.querySelector('.card-controls')) {
+            const ctrl = document.createElement('div');
+            ctrl.className = 'card-controls';
+            ctrl.innerHTML = '<button class="ctrl-btn" data-action="add-proj-tag">＋ Add Tag</button>';
+            body.appendChild(ctrl);
+          }
+        }
+      });
+    }
+
     function restoreData() {
       const data = loadData();
       if (!data) return;
@@ -2657,6 +3055,10 @@
       clone.querySelectorAll('.color-panel, .el-color-popover, .modal-overlay').forEach(el => el.remove());
       clone.querySelectorAll('.contact-url-btn').forEach(el => el.remove());
       clone.querySelector('#contactUrlPopup')?.remove();
+      clone.querySelectorAll('.card-url-btn').forEach(el => el.remove());
+      clone.querySelectorAll('.card-field-remove').forEach(el => el.remove());
+      clone.querySelectorAll('.card-controls').forEach(el => el.remove());
+      clone.querySelectorAll('.proj-tag-remove').forEach(el => el.remove());
 
       const html = '<!DOCTYPE html>\n' + clone.outerHTML;
       const blob = new Blob([html], { type: 'text/html' });
@@ -3006,6 +3408,10 @@
       clone.querySelectorAll('.tag-remove,.bullet-remove,.item-remove-btn').forEach(el => el.remove());
       clone.querySelectorAll('.contact-url-btn').forEach(el => el.remove());
       clone.querySelector('#contactUrlPopup')?.remove();
+      clone.querySelectorAll('.card-url-btn').forEach(el => el.remove());
+      clone.querySelectorAll('.card-field-remove').forEach(el => el.remove());
+      clone.querySelectorAll('.card-controls').forEach(el => el.remove());
+      clone.querySelectorAll('.proj-tag-remove').forEach(el => el.remove());
       // Bake CSS variable values
       const root = document.documentElement;
       const get = v => getComputedStyle(root).getPropertyValue(v).trim();
