@@ -795,6 +795,100 @@
     .contact-link:hover svg { stroke: #fff; }
     .contact-link svg { width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+    /* ===== Contact Link Wrap (edit mode) ===== */
+    .contact-link-wrap {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+    .contact-url-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border: none;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      padding: 5px;
+      opacity: 0.75;
+      transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .contact-url-btn:hover { opacity: 1; transform: scale(1.1); }
+    .contact-url-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+    .edit-mode .contact-url-btn { display: flex; }
+
+    /* ===== Contact URL Popup ===== */
+    .contact-url-popup {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 12px 40px rgba(102,126,234,0.22);
+      min-width: 280px;
+      max-width: 340px;
+    }
+    .contact-url-popup-label {
+      display: block;
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+    .contact-url-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px 11px;
+      border: 1.5px solid #ddd;
+      border-radius: 9px;
+      font-size: 0.87rem;
+      font-family: var(--font);
+      outline: none;
+      margin-bottom: 6px;
+      transition: border-color 0.2s;
+    }
+    .contact-url-input:focus { border-color: var(--primary); }
+    .contact-url-error {
+      font-size: 0.76rem;
+      color: #e74c3c;
+      margin-bottom: 8px;
+      display: none;
+    }
+    .contact-url-hint {
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .contact-url-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .contact-url-apply, .contact-url-cancel {
+      padding: 7px 16px;
+      border: none;
+      border-radius: 9px;
+      font-size: 0.83rem;
+      cursor: pointer;
+      font-family: var(--font);
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .contact-url-apply { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+    .contact-url-apply:hover { opacity: 0.9; }
+    .contact-url-cancel { background: #f0edf8; color: var(--text-secondary); }
+    .contact-url-cancel:hover { background: #e4e0f0; }
+
     /* ===== Footer ===== */
     .footer {
       text-align: center;
@@ -1582,26 +1676,59 @@
       <div class="contact-content" data-aos="fade-up" data-aos-delay="100">
         <p id="contact-text" data-editable="true">I'm always open to discussing new projects, creative ideas, or opportunities to be part of something amazing. Feel free to reach out!</p>
         <div class="contact-links">
-          <a href="#" class="contact-link" id="contact-email" data-editable="true" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2 4 12 13 22 4"/></svg>
-            your.email@example.com
-          </a>
-          <a href="#" class="contact-link" id="contact-phone" data-editable="true" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            (555) 123-4567
-          </a>
-          <a href="#" class="contact-link" id="contact-linkedin" data-editable="true" rel="noopener noreferrer" target="_blank">
-            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            LinkedIn Profile
-          </a>
-          <a href="#" class="contact-link" id="contact-github" data-editable="true" rel="noopener noreferrer" target="_blank">
-            <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
-            GitHub Profile
-          </a>
+          <div class="contact-link-wrap">
+            <a href="#" class="contact-link" id="contact-email" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2 4 12 13 22 4"/></svg>
+              <span id="contact-email-label" class="contact-label" data-editable="true">your.email@example.com</span>
+            </a>
+            <button class="contact-url-btn" data-for="contact-email" title="Set link URL">
+              <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </button>
+          </div>
+          <div class="contact-link-wrap">
+            <a href="#" class="contact-link" id="contact-phone" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              <span id="contact-phone-label" class="contact-label" data-editable="true">(555) 123-4567</span>
+            </a>
+            <button class="contact-url-btn" data-for="contact-phone" title="Set link URL">
+              <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </button>
+          </div>
+          <div class="contact-link-wrap">
+            <a href="#" class="contact-link" id="contact-linkedin" rel="noopener noreferrer" target="_blank">
+              <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              <span id="contact-linkedin-label" class="contact-label" data-editable="true">LinkedIn Profile</span>
+            </a>
+            <button class="contact-url-btn" data-for="contact-linkedin" title="Set link URL">
+              <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </button>
+          </div>
+          <div class="contact-link-wrap">
+            <a href="#" class="contact-link" id="contact-github" rel="noopener noreferrer" target="_blank">
+              <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+              <span id="contact-github-label" class="contact-label" data-editable="true">GitHub Profile</span>
+            </a>
+            <button class="contact-url-btn" data-for="contact-github" title="Set link URL">
+              <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ===== CONTACT URL POPUP ===== -->
+  <div class="contact-url-popup" id="contactUrlPopup" role="dialog" aria-modal="true" aria-label="Set link URL">
+    <label class="contact-url-popup-label">Link URL</label>
+    <input type="text" class="contact-url-input" id="contactUrlInput"
+      placeholder="https://example.com, mailto:you@email.com, tel:+15551234">
+    <div class="contact-url-error" id="contactUrlError">Only https://, http://, mailto:, and tel: links are allowed.</div>
+    <p class="contact-url-hint">Paste any URL to make this contact card clickable. Leave blank to remove the link.</p>
+    <div class="contact-url-actions">
+      <button class="contact-url-cancel" id="contactUrlCancel">Cancel</button>
+      <button class="contact-url-apply" id="contactUrlApply">Apply</button>
+    </div>
+  </div>
 
   <!-- ===== FOOTER ===== -->
   <div class="footer">
@@ -2062,11 +2189,22 @@
         return;
       }
 
+      // --- Contact URL button ---
+      const contactUrlBtn = e.target.closest('.contact-url-btn');
+      if (contactUrlBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        openContactUrlPopup(contactUrlBtn);
+        return;
+      }
+
       // --- Text editable ---
       const editTarget = e.target.closest('[data-editable]');
       if (editTarget) {
-        // Prevent link navigation in edit mode
+        // Prevent link navigation in edit mode (element itself or parent anchor)
         if (editTarget.tagName === 'A') e.preventDefault();
+        const parentAnchor = editTarget.closest('a');
+        if (parentAnchor) e.preventDefault();
         document.querySelectorAll('.editable-active').forEach(el => {
           if (el !== editTarget) {
             el.removeAttribute('contenteditable');
@@ -2088,12 +2226,101 @@
             el.removeAttribute('contenteditable');
             el.classList.remove('editable-active');
             saveData();
-            const contactIds = ['contact-email','contact-phone','contact-linkedin','contact-github'];
-            if (contactIds.includes(el.id) || contactIds.includes(el.closest('[id]')?.id)) {
+            const contactLabelIds = ['contact-email-label','contact-phone-label','contact-linkedin-label','contact-github-label'];
+            if (contactLabelIds.includes(el.id)) {
               updateContactHrefs();
             }
           }
         }, 100);
+      }
+    });
+
+    // ===== Contact URL Popup =====
+    let activeContactId = null;
+    const contactUrlPopup = document.getElementById('contactUrlPopup');
+    const contactUrlInput = document.getElementById('contactUrlInput');
+    const contactUrlError = document.getElementById('contactUrlError');
+    const contactUrlApply = document.getElementById('contactUrlApply');
+    const contactUrlCancel = document.getElementById('contactUrlCancel');
+
+    function openContactUrlPopup(btn) {
+      const forId = btn.dataset.for;
+      activeContactId = forId;
+      const anchor = document.getElementById(forId);
+      const currentHref = anchor ? anchor.getAttribute('href') : '#';
+      contactUrlInput.value = (currentHref && currentHref !== '#') ? currentHref : '';
+      contactUrlError.style.display = 'none';
+
+      // Position popup near the button, adjusted to stay on-screen
+      const rect = btn.getBoundingClientRect();
+      contactUrlPopup.style.display = 'block';
+      const popupW = contactUrlPopup.offsetWidth || 290;
+      let top = rect.bottom + 8;
+      let left = rect.left;
+      if (left + popupW > window.innerWidth - 10) left = window.innerWidth - popupW - 10;
+      if (left < 10) left = 10;
+      // Flip above button if popup would go off bottom
+      if (top + 160 > window.innerHeight) top = rect.top - 160 - 8;
+      contactUrlPopup.style.top = top + 'px';
+      contactUrlPopup.style.left = left + 'px';
+      contactUrlInput.focus();
+      contactUrlInput.select();
+    }
+
+    function closeContactUrlPopup() {
+      contactUrlPopup.style.display = 'none';
+      activeContactId = null;
+    }
+
+    function applyContactUrl() {
+      const url = contactUrlInput.value.trim();
+      const anchor = document.getElementById(activeContactId);
+      if (!anchor) { closeContactUrlPopup(); return; }
+
+      if (url === '') {
+        // User cleared the URL — remove explicit link
+        anchor.setAttribute('href', '#');
+        anchor.removeAttribute('data-contact-url');
+        closeContactUrlPopup();
+        saveData();
+        updateContactHrefs();
+        return;
+      }
+
+      if (!isSafeUrl(url)) {
+        contactUrlError.style.display = 'block';
+        contactUrlInput.focus();
+        return;
+      }
+
+      anchor.setAttribute('href', url);
+      anchor.setAttribute('data-contact-url', url);
+      // Ensure external links open in a new tab
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        anchor.setAttribute('target', '_blank');
+        anchor.setAttribute('rel', 'noopener noreferrer');
+      } else {
+        anchor.removeAttribute('target');
+        anchor.setAttribute('rel', 'noopener noreferrer');
+      }
+      closeContactUrlPopup();
+      saveData();
+    }
+
+    contactUrlApply.addEventListener('click', applyContactUrl);
+    contactUrlCancel.addEventListener('click', closeContactUrlPopup);
+    contactUrlInput.addEventListener('keydown', (e) => {
+      contactUrlError.style.display = 'none';
+      if (e.key === 'Enter') { e.preventDefault(); applyContactUrl(); }
+      if (e.key === 'Escape') { e.preventDefault(); closeContactUrlPopup(); }
+    });
+
+    // Close popup when clicking outside of it
+    document.addEventListener('click', (e) => {
+      if (contactUrlPopup.style.display === 'block' &&
+          !contactUrlPopup.contains(e.target) &&
+          !e.target.closest('.contact-url-btn')) {
+        closeContactUrlPopup();
       }
     });
 
@@ -2184,6 +2411,18 @@
         }
       });
 
+      // Save contact link URLs (explicit user-set URLs)
+      data.contactUrls = {};
+      ['contact-email', 'contact-phone', 'contact-linkedin', 'contact-github'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          data.contactUrls[id] = {
+            href: el.getAttribute('href') || '#',
+            explicit: el.getAttribute('data-contact-url') || ''
+          };
+        }
+      });
+
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
       catch (e) { console.warn('Could not save to localStorage:', e); }
     }
@@ -2195,7 +2434,22 @@
       } catch (e) { return null; }
     }
 
+    // Validate that a URL is safe (only allowed schemes)
+    function isSafeUrl(url) {
+      if (!url || typeof url !== 'string') return false;
+      const lower = url.trim().toLowerCase();
+      return lower === '#' ||
+             lower.startsWith('https://') ||
+             lower.startsWith('http://') ||
+             lower.startsWith('mailto:') ||
+             lower.startsWith('tel:');
+    }
+
     function getContactText(el) {
+      // Prefer the dedicated label span
+      const label = el.querySelector('.contact-label');
+      if (label) return label.textContent.trim();
+      // Fallback: clone and strip SVGs
       const clone = el.cloneNode(true);
       clone.querySelectorAll('svg').forEach(s => s.remove());
       return clone.textContent.trim();
@@ -2207,23 +2461,24 @@
       const linkedin = document.getElementById('contact-linkedin');
       const github = document.getElementById('contact-github');
 
-      if (email) {
+      // Only auto-update href when user has NOT set an explicit URL via the link button
+      if (email && !email.dataset.contactUrl) {
         const text = getContactText(email);
         const match = text.match(/[\w.\-+]+@[\w.\-]+\.\w+/);
         if (match) email.href = 'mailto:' + match[0];
       }
-      if (phone) {
+      if (phone && !phone.dataset.contactUrl) {
         const text = getContactText(phone);
         const digits = text.replace(/[^\d+]/g, '');
         if (digits.length >= 7) phone.href = 'tel:' + digits;
       }
-      if (linkedin) {
+      if (linkedin && !linkedin.dataset.contactUrl) {
         const text = getContactText(linkedin);
         if (text && text !== 'LinkedIn Profile') {
           linkedin.href = /^https?:\/\//i.test(text) ? text : 'https://linkedin.com/in/' + text.replace(/^.*linkedin\.com\/in\//i, '').replace(/^\/+|\/+$/g, '');
         }
       }
-      if (github) {
+      if (github && !github.dataset.contactUrl) {
         const text = getContactText(github);
         if (text && text !== 'GitHub Profile') {
           github.href = /^https?:\/\//i.test(text) ? text : 'https://github.com/' + text.replace(/^.*github\.com\//i, '').replace(/^\/+|\/+$/g, '');
@@ -2302,10 +2557,37 @@
       }
 
       // Restore text
+      const legacyContactIds = new Set(['contact-email','contact-phone','contact-linkedin','contact-github']);
       if (data.sections) {
         for (const [id, html] of Object.entries(data.sections)) {
+          // Migrate old format: contact link innerHTML was stored under the <a> ID.
+          // Now we store just the label text under contact-*-label IDs.
+          if (legacyContactIds.has(id)) {
+            const labelEl = document.getElementById(id + '-label');
+            if (labelEl) {
+              // Extract text only (strip SVG from old saved HTML)
+              const tmp = document.createElement('div');
+              tmp.innerHTML = sanitizeHTML(html);
+              tmp.querySelectorAll('svg').forEach(s => s.remove());
+              const text = tmp.textContent.trim();
+              if (text) labelEl.textContent = text;
+            }
+            continue; // Don't overwrite the <a> element's innerHTML
+          }
           const el = document.getElementById(id);
           if (el) el.innerHTML = sanitizeHTML(html);
+        }
+      }
+
+      // Restore contact link URLs
+      if (data.contactUrls) {
+        for (const [id, info] of Object.entries(data.contactUrls)) {
+          const el = document.getElementById(id);
+          if (!el) continue;
+          const href = typeof info === 'object' ? info.href : info;
+          const explicit = typeof info === 'object' ? info.explicit : '';
+          if (href && isSafeUrl(href)) el.setAttribute('href', href);
+          if (explicit && isSafeUrl(explicit)) el.setAttribute('data-contact-url', explicit);
         }
       }
 
@@ -2354,6 +2636,8 @@
       clone.querySelectorAll('.tag-remove, .bullet-remove').forEach(el => el.remove());
       clone.querySelectorAll('.item-remove-btn').forEach(el => el.remove());
       clone.querySelectorAll('.color-panel, .el-color-popover, .modal-overlay').forEach(el => el.remove());
+      clone.querySelectorAll('.contact-url-btn').forEach(el => el.remove());
+      clone.querySelector('#contactUrlPopup')?.remove();
 
       // Make sure skill bars have final widths
       clone.querySelectorAll('.skill-fill').forEach(bar => {
@@ -2702,6 +2986,8 @@
       clone.querySelectorAll('.fab-group,.edit-banner,.save-toast,.color-panel,.el-color-popover,.modal-overlay').forEach(el => el.remove());
       clone.querySelectorAll('.section-controls,.bullet-controls,.skill-item-controls').forEach(el => el.remove());
       clone.querySelectorAll('.tag-remove,.bullet-remove,.item-remove-btn').forEach(el => el.remove());
+      clone.querySelectorAll('.contact-url-btn').forEach(el => el.remove());
+      clone.querySelector('#contactUrlPopup')?.remove();
       // Bake CSS variable values
       const root = document.documentElement;
       const get = v => getComputedStyle(root).getPropertyValue(v).trim();
