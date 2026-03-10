@@ -1874,9 +1874,6 @@
     let idCounter = Date.now();
     function uid() { return 'dyn-' + (idCounter++); }
 
-    // ===== AOS Init =====
-    AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
-
     // ===== Hero Particles =====
     function createHeroParticles() {
       const container = document.getElementById('heroParticles');
@@ -1953,7 +1950,7 @@
 
     // ===== Restore data & exit early in published/view mode =====
     restoreData();
-    if (typeof AOS !== 'undefined') AOS.refresh();
+    if (typeof AOS !== 'undefined') AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
     updateContactHrefs();
     if (isViewMode) return; // published page needs nothing more
 
@@ -2656,11 +2653,6 @@
       clone.querySelectorAll('.contact-url-btn').forEach(el => el.remove());
       clone.querySelector('#contactUrlPopup')?.remove();
 
-      // Make sure skill bars have final widths
-      clone.querySelectorAll('.skill-fill').forEach(bar => {
-        bar.style.width = bar.dataset.percent + '%';
-      });
-
       const html = '<!DOCTYPE html>\n' + clone.outerHTML;
       const blob = new Blob([html], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
@@ -3014,8 +3006,6 @@
       overrides += '}';
       const styleEl = clone.querySelector('style');
       if (styleEl) styleEl.textContent = overrides + styleEl.textContent;
-      // Skill bar widths
-      clone.querySelectorAll('.skill-fill').forEach(bar => { bar.style.width = (bar.dataset.percent||'0')+'%'; });
       // Embed saved data + override STORAGE_KEY loading
       const savedData = localStorage.getItem(STORAGE_KEY) || '{}';
       const scripts = clone.querySelectorAll('script');
