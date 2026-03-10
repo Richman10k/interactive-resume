@@ -2646,6 +2646,8 @@
 
       // Reset AOS state so animations replay on load
       clone.querySelectorAll('.aos-init, .aos-animate').forEach(el => el.classList.remove('aos-init', 'aos-animate'));
+      // Reset skill bar widths so they animate on load
+      clone.querySelectorAll('.skill-fill').forEach(el => el.style.width = '');
 
       // Remove edit controls from export
       clone.querySelectorAll('.section-controls, .bullet-controls').forEach(el => el.remove());
@@ -2996,6 +2998,8 @@
       clone.querySelector('.el-color-popover')?.classList.remove('show');
       // Reset AOS state so animations replay on load
       clone.querySelectorAll('.aos-init, .aos-animate').forEach(el => el.classList.remove('aos-init', 'aos-animate'));
+      // Reset skill bar widths so they animate on load
+      clone.querySelectorAll('.skill-fill').forEach(el => el.style.width = '');
       // Strip all edit UI
       clone.querySelectorAll('.fab-group,.edit-banner,.save-toast,.color-panel,.el-color-popover,.modal-overlay').forEach(el => el.remove());
       clone.querySelectorAll('.section-controls,.bullet-controls,.skill-item-controls').forEach(el => el.remove());
