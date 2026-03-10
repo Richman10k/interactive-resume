@@ -454,6 +454,30 @@
       color: #fff;
       text-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+    .profile-photo .camera-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.75);
+    }
+    .profile-photo .camera-icon svg {
+      width: 52px;
+      height: 52px;
+      stroke: rgba(255,255,255,0.8);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+    }
+    .profile-photo .camera-icon span {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+    }
     .hero h1 { margin-bottom: 8px; }
     .hero-subtitle {
       font-size: clamp(1rem, 2.5vw, 1.35rem);
@@ -854,6 +878,26 @@
     }
     .save-toast.show { opacity: 1; transform: translateY(0); }
 
+    /* ===== Text Wrapping for All Editable Content ===== */
+    [data-editable],
+    [contenteditable] {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .glass-card,
+    .timeline-card,
+    .cert-card,
+    .project-body,
+    .about-card {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      min-width: 0;
+    }
+
     /* ===== Edit Mode Styles ===== */
     .edit-mode [data-editable] {
       outline: 2px dashed rgba(102, 126, 234, 0.35);
@@ -1185,7 +1229,13 @@
     <div class="hero-particles" id="heroParticles"></div>
     <div class="hero-content">
       <div class="profile-photo" id="profile-photo" data-image-editable="true">
-        <span class="initials" id="hero-initials" data-editable="true">YN</span>
+        <div class="camera-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span>Add Photo</span>
+        </div>
       </div>
       <h1 id="hero-name" data-editable="true" data-aos="fade-up">Your Name</h1>
       <p class="hero-subtitle" id="hero-title" data-editable="true" data-aos="fade-up" data-aos-delay="100">Your Professional Title</p>
