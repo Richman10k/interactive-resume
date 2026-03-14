@@ -3577,8 +3577,15 @@
       btn.innerHTML = '⏳ Generating…';
       btn.disabled = true;
 
-      // Use a fixed design width — avoids inflated scrollWidth from off-screen positioned elements
-      const CAPTURE_WIDTH = 1200;
+      // Scroll to top so html2canvas origin is (0,0) — restore after
+      const savedScrollX = window.scrollX;
+      const savedScrollY = window.scrollY;
+      window.scrollTo(0, 0);
+      // Let the browser settle before measuring
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      // Use the actual rendered viewport width so centering in the clone matches exactly
+      const CAPTURE_WIDTH = document.documentElement.clientWidth;
 
       const opt = {
         margin:    0,
@@ -3591,24 +3598,23 @@
           scrollX:         0,
           scrollY:         0,
           windowWidth:     CAPTURE_WIDTH,
-          // All fixes applied inside onclone — live page is never mutated visually
           onclone: (cloneDoc) => {
-            const cb = cloneDoc.body;
             const ch = cloneDoc.documentElement;
-            // Remove all overflow/clip
-            ch.style.cssText += ';overflow:visible!important;overflow-x:visible!important;';
-            cb.style.cssText += ';overflow:visible!important;overflow-x:visible!important;width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;';
-            // Collapse hero full-viewport-height (must use !important to beat stylesheet)
+            const cb = cloneDoc.body;
+            // Lock both <html> and <body> to exact viewport width, clear all overflow clipping
+            ch.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;overflow-x:visible!important;';
+            cb.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;overflow-x:visible!important;';
+            // Collapse hero full-viewport height
             const heroEl = cloneDoc.querySelector('.hero');
             if (heroEl) heroEl.style.cssText += ';min-height:unset!important;padding:60px 24px!important;';
             // Force all AOS-hidden elements visible
             cloneDoc.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
-            // Ensure skill bars show correct widths
+            // Correct skill bar widths (no animation)
             cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
               el.style.transition = 'none';
               el.style.width = (el.dataset.percent || '0') + '%';
             });
-            // Hide floating UI chrome
+            // Hide floating chrome
             cloneDoc.querySelectorAll(
               '.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .el-color-popover, .modal-overlay, .aurora-bg, .scroll-indicator, #contactUrlPopup'
             ).forEach(el => { el.style.display = 'none'; });
@@ -3619,11 +3625,12 @@
       };
 
       try {
-        await html2pdf().set(opt).from(document.body).save();
+        await html2pdf().set(opt).from(document.documentElement).save();
       } catch (err) {
         alert('Could not generate PDF: ' + err.message);
       }
 
+      window.scrollTo(savedScrollX, savedScrollY);
       btn.innerHTML = origHTML;
       btn.disabled = false;
     });
