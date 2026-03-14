@@ -1418,6 +1418,23 @@
     body.view-mode .fab-group,
     body.view-mode .edit-banner,
     body.view-mode .save-toast { display: none !important; }
+
+    /* ===== Print / PDF styles ===== */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .fab-group, .edit-banner, .save-toast, .modal-overlay,
+      .section-controls, .bullet-controls, .skill-item-controls,
+      .tag-remove, .bullet-remove, .item-remove-btn,
+      .contact-url-btn, .card-url-btn, .card-controls,
+      .card-field-remove, .proj-tag-remove { display: none !important; }
+      body { background: #fff !important; }
+      .aurora-bg { display: none !important; }
+      section { break-inside: avoid; page-break-inside: avoid; }
+      .timeline-item { break-inside: avoid; page-break-inside: avoid; }
+      .cert-card, .project-card { break-inside: avoid; page-break-inside: avoid; }
+      .hero { min-height: unset !important; padding: 40px 20px !important; }
+      .container { max-width: 100% !important; padding: 0 20px !important; }
+    }
   </style>
 </head>
 <body>
@@ -1977,6 +1994,7 @@
       <div class="modal-actions">
         <button class="modal-btn-primary" id="openPublishedView">Open Preview</button>
         <button class="modal-btn-secondary" id="downloadPublished">Download HTML</button>
+        <button class="modal-btn-secondary" id="downloadPdf" style="background:linear-gradient(135deg,rgba(102,126,234,0.15),rgba(118,75,162,0.15));color:var(--primary);">Download PDF</button>
         <button class="modal-btn-close" id="closePublishModal">Close</button>
       </div>
     </div>
@@ -2104,7 +2122,7 @@
     // ===== Restore data & exit early in published/view mode =====
     restoreData();
     initCardUI();
-    if (typeof AOS !== 'undefined') AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
+    if (typeof AOS !== 'undefined') AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 150, startEvent: 'DOMContentLoaded' });
     updateContactHrefs();
 
     // ===== Card URL navigation (works in both view and edit mode) =====
@@ -2145,6 +2163,23 @@
       }
     });
 
+    // Sort skill items by percentage, highest first
+    function sortSkillsByPercent() {
+      const container = document.querySelector('.skill-bars');
+      if (!container) return;
+      const items = Array.from(container.querySelectorAll('.skill-item'));
+      if (items.length < 2) return;
+      items.sort((a, b) => {
+        const aVal = parseInt(a.querySelector('.skill-percent')?.dataset.pct) || 0;
+        const bVal = parseInt(b.querySelector('.skill-percent')?.dataset.pct) || 0;
+        return bVal - aVal;
+      });
+      const controls = container.querySelector('.section-controls');
+      items.forEach(el => el.remove());
+      if (controls) items.forEach(el => controls.insertAdjacentElement('beforebegin', el));
+      else items.forEach(el => container.appendChild(el));
+    }
+
     // Delegated click handler for everything in edit mode
     document.body.addEventListener('click', (e) => {
       if (!isEditMode) return;
@@ -2163,6 +2198,7 @@
         pctEl.textContent = val + '%';
         fillEl.dataset.percent = val;
         fillEl.style.width = val + '%';
+        sortSkillsByPercent();
         saveData();
         return;
       }
@@ -2189,6 +2225,7 @@
           const fillEl = pctText.closest('.skill-item').querySelector('.skill-fill');
           fillEl.dataset.percent = v;
           fillEl.style.width = v + '%';
+          sortSkillsByPercent();
           saveData();
         }
         input.addEventListener('blur', commit);
@@ -3456,6 +3493,24 @@
       a.href = url; a.download = 'my-resume-published.html';
       document.body.appendChild(a); a.click();
       document.body.removeChild(a); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('downloadPdf').addEventListener('click', () => {
+      const html = window._publishedHTML || generatePublishedHTML();
+      // Inject auto-print script so the tab prints immediately on open
+      const printReady = html.replace('</body>', '<script>window.addEventListener("load",function(){setTimeout(function(){window.print();},600);});<\/script></body>');
+      const blob = new Blob([printReady], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const tab = window.open(url, '_blank');
+      if (!tab) {
+        // Fallback if popup blocked: just download and instruct user
+        const a = document.createElement('a');
+        a.href = url; a.download = 'my-resume-print.html';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        alert('Popup blocked. The print-ready HTML was downloaded — open it and press Ctrl+P (or Cmd+P) then choose "Save as PDF".');
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
     });
 
     document.getElementById('copyPublishLink').addEventListener('click', () => {
