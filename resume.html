@@ -1447,22 +1447,41 @@
 
     /* ===== Print / PDF styles ===== */
     @media print {
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .fab-group, .edit-banner, .save-toast, .modal-overlay,
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        animation: none !important;
+        transition: none !important;
+      }
+      .fab-group, .navbar, .edit-banner, .save-toast, .modal-overlay,
       .section-controls, .bullet-controls, .skill-item-controls,
       .tag-remove, .bullet-remove, .item-remove-btn,
       .contact-url-btn, .card-url-btn, .card-controls,
-      .card-field-remove, .proj-tag-remove { display: none !important; }
+      .card-field-remove, .proj-tag-remove, .aurora-bg,
+      .scroll-indicator, .hero-particles, .el-color-btns { display: none !important; }
       body { background: #fff !important; }
-      .aurora-bg { display: none !important; }
+      /* Collapse hero */
+      .hero { min-height: unset !important; height: auto !important; padding: 40px 20px !important; }
+      .container { max-width: 100% !important; padding: 0 20px !important; }
+      /* Force all AOS-hidden elements visible */
+      [data-aos], [data-aos].aos-init, [data-aos].aos-animate {
+        opacity: 1 !important;
+        transform: none !important;
+        visibility: visible !important;
+      }
+      /* Remove overflow clipping */
+      html, body, section, main, .container,
+      .about-card, .timeline-wrap, .timeline-item, .timeline-content,
+      .cert-grid, .cert-card, .skills-wrapper, .skill-bar-wrap, .skill-bar,
+      .projects-grid, .project-card, .other-skills-list {
+        overflow: visible !important;
+        max-height: none !important;
+      }
+      .skill-fill { transition: none !important; }
+      /* Page break hints */
       section { break-inside: avoid; page-break-inside: avoid; }
       .timeline-item { break-inside: avoid; page-break-inside: avoid; }
       .cert-card, .project-card { break-inside: avoid; page-break-inside: avoid; }
-      .hero { min-height: unset !important; padding: 40px 20px !important; }
-      .container { max-width: 100% !important; padding: 0 20px !important; }
-      /* Force all AOS-hidden elements visible for print */
-      [data-aos] { opacity: 1 !important; transform: translateX(0) translateY(0) scale(1) !important; transition: none !important; }
-      .skill-fill { transition: none !important; }
     }
   </style>
 </head>
@@ -3577,57 +3596,131 @@
       btn.innerHTML = '⏳ Generating…';
       btn.disabled = true;
 
-      // Scroll to top so html2canvas origin is (0,0) — restore after
+      // Pre-trigger all AOS animations on the live page so elements are visible
+      document.querySelectorAll('[data-aos]').forEach(el => {
+        el.classList.add('aos-init', 'aos-animate');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.visibility = 'visible';
+      });
+      // Ensure all skill bars have their widths set
+      document.querySelectorAll('.skill-fill').forEach(el => {
+        el.style.transition = 'none';
+        el.style.width = (el.dataset.percent || '0') + '%';
+      });
+
+      // Wait for the browser to repaint with all elements visible
+      await new Promise(r => setTimeout(r, 350));
+
       const savedScrollX = window.scrollX;
       const savedScrollY = window.scrollY;
       window.scrollTo(0, 0);
-      // Let the browser settle before measuring
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-      // Use the actual rendered viewport width so centering in the clone matches exactly
-      const CAPTURE_WIDTH = document.documentElement.clientWidth;
+      const CAPTURE_WIDTH = 1200;
 
       const opt = {
-        margin:    0,
-        filename:  'mypage.pdf',
-        image:     { type: 'jpeg', quality: 0.97 },
+        margin:   0,
+        filename: 'resume.pdf',
+        image:    { type: 'jpeg', quality: 0.98 },
         html2canvas: {
-          scale:           1.5,
+          scale:           2,
           useCORS:         true,
+          allowTaint:      true,
           letterRendering: true,
           scrollX:         0,
           scrollY:         0,
           windowWidth:     CAPTURE_WIDTH,
           onclone: (cloneDoc) => {
+            // Inject a comprehensive override stylesheet into the clone
+            const overrideStyle = cloneDoc.createElement('style');
+            overrideStyle.id = 'pdf-render-overrides';
+            overrideStyle.textContent = `
+              /* Stop all animations/transitions so nothing is mid-frame */
+              *, *::before, *::after {
+                animation: none !important;
+                animation-duration: 0s !important;
+                transition: none !important;
+                transition-duration: 0s !important;
+              }
+              /* Force every AOS element fully visible regardless of scroll state */
+              [data-aos], [data-aos].aos-init, [data-aos].aos-animate,
+              .aos-init[data-aos], .aos-animate[data-aos] {
+                opacity: 1 !important;
+                transform: none !important;
+                visibility: visible !important;
+              }
+              /* Remove all overflow clipping that cuts off text and boxes */
+              html, body, main, section,
+              .container, .hero-content,
+              .about-card,
+              .timeline-wrap, .timeline-item, .timeline-content, .timeline-body,
+              .cert-grid, .cert-card, .cert-badge,
+              .skills-wrapper, .skill-col, .skill-bar-wrap, .skill-bar,
+              .other-skills, .other-skills-list,
+              .projects-grid, .project-card, .project-info,
+              .contact-content, .contact-links {
+                overflow: visible !important;
+                overflow-x: visible !important;
+                overflow-y: visible !important;
+                max-height: none !important;
+              }
+              /* Collapse hero — no full-viewport blank page */
+              .hero {
+                min-height: unset !important;
+                height: auto !important;
+                padding: 60px 24px 40px !important;
+              }
+              /* Hide all interactive UI chrome */
+              .fab-group, .navbar, .edit-banner, .save-toast,
+              .color-panel, .el-color-popover, .modal-overlay,
+              .aurora-bg, .scroll-indicator, #contactUrlPopup,
+              .hero-particles, .section-controls,
+              .contact-url-btn, .el-color-btns {
+                display: none !important;
+              }
+              /* Make sure all images and text are fully visible */
+              img { opacity: 1 !important; visibility: visible !important; }
+              p, h1, h2, h3, h4, span, li, a {
+                opacity: 1 !important;
+                visibility: visible !important;
+              }
+              /* Section page-break hints */
+              section { page-break-before: auto; page-break-inside: avoid; }
+              .cert-card, .project-card, .timeline-item { page-break-inside: avoid; }
+            `;
+            cloneDoc.head.appendChild(overrideStyle);
+
+            // Belt-and-suspenders: set inline styles on every AOS element
+            cloneDoc.querySelectorAll('[data-aos]').forEach(el => {
+              el.classList.add('aos-init', 'aos-animate');
+              el.style.setProperty('opacity', '1', 'important');
+              el.style.setProperty('transform', 'none', 'important');
+              el.style.setProperty('visibility', 'visible', 'important');
+            });
+
+            // Fix all skill bar widths
+            cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
+              el.style.setProperty('transition', 'none', 'important');
+              el.style.setProperty('width', (el.dataset.percent || '0') + '%', 'important');
+            });
+
+            // Set fixed capture width on html+body
             const ch = cloneDoc.documentElement;
             const cb = cloneDoc.body;
-            // Lock both <html> and <body> to exact viewport width, clear all overflow clipping
-            ch.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;overflow-x:visible!important;';
-            cb.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;overflow-x:visible!important;';
-            // Collapse hero full-viewport height
-            const heroEl = cloneDoc.querySelector('.hero');
-            if (heroEl) heroEl.style.cssText += ';min-height:unset!important;padding:60px 24px!important;';
-            // Force all AOS-hidden elements visible
-            cloneDoc.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
-            // Correct skill bar widths (no animation)
-            cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
-              el.style.transition = 'none';
-              el.style.width = (el.dataset.percent || '0') + '%';
-            });
-            // Hide floating chrome
-            cloneDoc.querySelectorAll(
-              '.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .el-color-popover, .modal-overlay, .aurora-bg, .scroll-indicator, #contactUrlPopup'
-            ).forEach(el => { el.style.display = 'none'; });
+            ch.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;';
+            cb.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;';
           }
         },
-        jsPDF:     { unit: 'mm', format: 'a4', orientation: 'landscape' },
-        pagebreak: { mode: ['css', 'legacy'] }
+        jsPDF:     { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['.cert-card', '.project-card', '.timeline-item'] }
       };
 
       try {
         await html2pdf().set(opt).from(document.documentElement).save();
       } catch (err) {
         alert('Could not generate PDF: ' + err.message);
+        console.error('PDF generation error:', err);
       }
 
       window.scrollTo(savedScrollX, savedScrollY);
