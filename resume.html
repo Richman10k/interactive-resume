@@ -3596,136 +3596,165 @@
       btn.innerHTML = '⏳ Generating…';
       btn.disabled = true;
 
-      // Pre-trigger all AOS animations on the live page so elements are visible
-      document.querySelectorAll('[data-aos]').forEach(el => {
-        el.classList.add('aos-init', 'aos-animate');
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-        el.style.visibility = 'visible';
-      });
-      // Ensure all skill bars have their widths set
-      document.querySelectorAll('.skill-fill').forEach(el => {
-        el.style.transition = 'none';
-        el.style.width = (el.dataset.percent || '0') + '%';
-      });
+      // A4 at 96 dpi = 794px. Using this as our capture width means
+      // html2canvas sees exactly one page-width of content with no offset.
+      const A4_PX = 794;
 
-      // Wait for the browser to repaint with all elements visible
-      await new Promise(r => setTimeout(r, 350));
-
-      const savedScrollX = window.scrollX;
-      const savedScrollY = window.scrollY;
-      window.scrollTo(0, 0);
-      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-      const CAPTURE_WIDTH = 1200;
-
-      const opt = {
-        margin:   0,
-        filename: 'resume.pdf',
-        image:    { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-          scale:           2,
-          useCORS:         true,
-          allowTaint:      true,
-          letterRendering: true,
-          scrollX:         0,
-          scrollY:         0,
-          windowWidth:     CAPTURE_WIDTH,
-          onclone: (cloneDoc) => {
-            // Inject a comprehensive override stylesheet into the clone
-            const overrideStyle = cloneDoc.createElement('style');
-            overrideStyle.id = 'pdf-render-overrides';
-            overrideStyle.textContent = `
-              /* Stop all animations/transitions so nothing is mid-frame */
-              *, *::before, *::after {
-                animation: none !important;
-                animation-duration: 0s !important;
-                transition: none !important;
-                transition-duration: 0s !important;
-              }
-              /* Force every AOS element fully visible regardless of scroll state */
-              [data-aos], [data-aos].aos-init, [data-aos].aos-animate,
-              .aos-init[data-aos], .aos-animate[data-aos] {
-                opacity: 1 !important;
-                transform: none !important;
-                visibility: visible !important;
-              }
-              /* Remove all overflow clipping that cuts off text and boxes */
-              html, body, main, section,
-              .container, .hero-content,
-              .about-card,
-              .timeline-wrap, .timeline-item, .timeline-content, .timeline-body,
-              .cert-grid, .cert-card, .cert-badge,
-              .skills-wrapper, .skill-col, .skill-bar-wrap, .skill-bar,
-              .other-skills, .other-skills-list,
-              .projects-grid, .project-card, .project-info,
-              .contact-content, .contact-links {
-                overflow: visible !important;
-                overflow-x: visible !important;
-                overflow-y: visible !important;
-                max-height: none !important;
-              }
-              /* Collapse hero — no full-viewport blank page */
-              .hero {
-                min-height: unset !important;
-                height: auto !important;
-                padding: 60px 24px 40px !important;
-              }
-              /* Hide all interactive UI chrome */
-              .fab-group, .navbar, .edit-banner, .save-toast,
-              .color-panel, .el-color-popover, .modal-overlay,
-              .aurora-bg, .scroll-indicator, #contactUrlPopup,
-              .hero-particles, .section-controls,
-              .contact-url-btn, .el-color-btns {
-                display: none !important;
-              }
-              /* Make sure all images and text are fully visible */
-              img { opacity: 1 !important; visibility: visible !important; }
-              p, h1, h2, h3, h4, span, li, a {
-                opacity: 1 !important;
-                visibility: visible !important;
-              }
-              /* Section page-break hints */
-              section { page-break-before: auto; page-break-inside: avoid; }
-              .cert-card, .project-card, .timeline-item { page-break-inside: avoid; }
-            `;
-            cloneDoc.head.appendChild(overrideStyle);
-
-            // Belt-and-suspenders: set inline styles on every AOS element
-            cloneDoc.querySelectorAll('[data-aos]').forEach(el => {
-              el.classList.add('aos-init', 'aos-animate');
-              el.style.setProperty('opacity', '1', 'important');
-              el.style.setProperty('transform', 'none', 'important');
-              el.style.setProperty('visibility', 'visible', 'important');
-            });
-
-            // Fix all skill bar widths
-            cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
-              el.style.setProperty('transition', 'none', 'important');
-              el.style.setProperty('width', (el.dataset.percent || '0') + '%', 'important');
-            });
-
-            // Set fixed capture width on html+body
-            const ch = cloneDoc.documentElement;
-            const cb = cloneDoc.body;
-            ch.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;';
-            cb.style.cssText += ';width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;overflow:visible!important;';
-          }
-        },
-        jsPDF:     { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'], avoid: ['.cert-card', '.project-card', '.timeline-item'] }
-      };
-
+      let pdfRoot = null;
       try {
-        await html2pdf().set(opt).from(document.documentElement).save();
+        // ── 1. Clone the entire body so we work on a copy, not the live DOM ──
+        const bodyClone = document.body.cloneNode(true);
+
+        // ── 2. Strip every piece of interactive UI chrome ──
+        [
+          '.fab-group', '.navbar', '.edit-banner', '.save-toast',
+          '.color-panel', '.el-color-popover', '.modal-overlay',
+          '.aurora-bg', '.scroll-indicator', '#contactUrlPopup',
+          '.hero-particles', '.section-controls', '.contact-url-btn',
+          '.el-color-btns', '.bullet-controls', '.skill-item-controls',
+          '.tag-remove', '.bullet-remove', '.item-remove-btn',
+          '.card-url-btn', '.card-controls', '.card-field-remove', '.proj-tag-remove'
+        ].forEach(sel => bodyClone.querySelectorAll(sel).forEach(el => el.remove()));
+
+        // ── 3. Force every AOS-hidden element fully visible ──
+        bodyClone.querySelectorAll('[data-aos]').forEach(el => {
+          el.removeAttribute('data-aos');
+          el.classList.add('aos-init', 'aos-animate');
+          el.style.cssText += ';opacity:1!important;transform:none!important;visibility:visible!important;';
+        });
+
+        // ── 4. Collapse hero (no full-viewport blank first page) ──
+        const heroEl = bodyClone.querySelector('.hero');
+        if (heroEl) heroEl.style.cssText += ';min-height:unset!important;height:auto!important;padding:50px 24px 35px!important;';
+
+        // ── 5. Fix skill bar widths (they start at 0 until JS animation fires) ──
+        bodyClone.querySelectorAll('.skill-fill').forEach(el => {
+          el.style.cssText += ';transition:none!important;width:' + (el.dataset.percent || '0') + '%!important;';
+        });
+
+        // ── 6. Build an isolated, fixed-width container ──
+        //    Feeding this element (not document.documentElement) to html2pdf
+        //    eliminates the right-shift problem: there is no document margin or
+        //    centered-body offset — the element IS the full capture width.
+        pdfRoot = document.createElement('div');
+        pdfRoot.id = '__pdf_root__';
+        // Position far off-screen so the user never sees the temporary node
+        pdfRoot.style.cssText = [
+          'position:absolute',
+          'top:0',
+          'left:-9999px',
+          'width:' + A4_PX + 'px',
+          'max-width:none',
+          'margin:0',
+          'padding:0',
+          'overflow:visible',
+          'background:#ffffff',
+          'box-sizing:border-box',
+        ].join(';');
+        pdfRoot.innerHTML = bodyClone.innerHTML;
+
+        // ── 7. Inject scoped CSS overrides into the container ──
+        //    These run inside the same document so the original CSS still applies,
+        //    but our overrides win on anything that would hide or clip content.
+        const overrideStyle = document.createElement('style');
+        overrideStyle.textContent = `
+          /* Kill all animations so nothing is mid-frame when captured */
+          #__pdf_root__ *, #__pdf_root__ *::before, #__pdf_root__ *::after {
+            animation: none !important;
+            animation-duration: 0s !important;
+            transition: none !important;
+            transition-duration: 0s !important;
+          }
+          /* AOS — belt-and-suspenders (attribute already removed above, class kept) */
+          #__pdf_root__ .aos-init, #__pdf_root__ .aos-animate {
+            opacity: 1 !important;
+            transform: none !important;
+            visibility: visible !important;
+          }
+          /* Remove every overflow:hidden that clips text or boxes */
+          #__pdf_root__,
+          #__pdf_root__ section,
+          #__pdf_root__ .hero-content,
+          #__pdf_root__ .about-card,
+          #__pdf_root__ .timeline-wrap,
+          #__pdf_root__ .timeline-item,
+          #__pdf_root__ .timeline-content,
+          #__pdf_root__ .timeline-body,
+          #__pdf_root__ .cert-grid,
+          #__pdf_root__ .cert-card,
+          #__pdf_root__ .cert-badge,
+          #__pdf_root__ .skills-wrapper,
+          #__pdf_root__ .skill-col,
+          #__pdf_root__ .skill-bar-wrap,
+          #__pdf_root__ .skill-bar,
+          #__pdf_root__ .other-skills,
+          #__pdf_root__ .other-skills-list,
+          #__pdf_root__ .projects-grid,
+          #__pdf_root__ .project-card,
+          #__pdf_root__ .project-img,
+          #__pdf_root__ .project-info,
+          #__pdf_root__ .contact-content,
+          #__pdf_root__ .contact-links {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            max-height: none !important;
+          }
+          /* Full width so nothing wraps unexpectedly */
+          #__pdf_root__ .container {
+            max-width: 100% !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 20px !important;
+          }
+          /* Make all images and text fully opaque */
+          #__pdf_root__ img  { opacity: 1 !important; visibility: visible !important; }
+          #__pdf_root__ p, #__pdf_root__ h1, #__pdf_root__ h2,
+          #__pdf_root__ h3, #__pdf_root__ h4, #__pdf_root__ span,
+          #__pdf_root__ li,  #__pdf_root__ a {
+            opacity: 1 !important; visibility: visible !important;
+          }
+          /* Page-break hints */
+          #__pdf_root__ section        { page-break-inside: avoid; }
+          #__pdf_root__ .timeline-item { page-break-inside: avoid; }
+          #__pdf_root__ .cert-card,
+          #__pdf_root__ .project-card  { page-break-inside: avoid; }
+        `;
+        pdfRoot.appendChild(overrideStyle);
+        document.body.appendChild(pdfRoot);
+
+        // Let the browser paint the off-screen element once
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        // ── 8. Generate the PDF ──
+        const opt = {
+          margin:   [8, 8, 8, 8],   // 8 mm margins all round
+          filename: 'resume.pdf',
+          image:    { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale:           2,       // 2× = high DPI, ~150 dpi equivalent
+            useCORS:         true,
+            allowTaint:      true,
+            letterRendering: true,
+            scrollX:         0,
+            scrollY:         0,
+            windowWidth:     A4_PX,   // matches the element width exactly → no offset
+            width:           A4_PX,
+          },
+          jsPDF:     { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'] },
+        };
+
+        await html2pdf().set(opt).from(pdfRoot).save();
+
       } catch (err) {
         alert('Could not generate PDF: ' + err.message);
         console.error('PDF generation error:', err);
+      } finally {
+        if (pdfRoot) pdfRoot.remove();
+        btn.innerHTML = origHTML;
+        btn.disabled = false;
       }
-
-      window.scrollTo(savedScrollX, savedScrollY);
-      btn.innerHTML = origHTML;
-      btn.disabled = false;
     });
 
     document.getElementById('copyPublishLink').addEventListener('click', () => {
