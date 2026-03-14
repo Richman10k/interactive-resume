@@ -3592,28 +3592,53 @@
       const hero = document.querySelector('.hero');
       const heroOldMin = hero ? hero.style.minHeight : '';
       if (hero) hero.style.minHeight = 'auto';
-      // 5. Remove body overflow restriction so html2canvas can measure full height
+      // 5. Remove ALL overflow restrictions so html2canvas captures the full page
       const bodyOldOverflow = document.body.style.overflow;
+      const bodyOldOverflowX = document.body.style.overflowX;
+      const htmlOldOverflow = document.documentElement.style.overflow;
+      const htmlOldOverflowX = document.documentElement.style.overflowX;
       document.body.style.overflow = 'visible';
+      document.body.style.overflowX = 'visible';
+      document.documentElement.style.overflow = 'visible';
+      document.documentElement.style.overflowX = 'visible';
+      // 6. Fix body width so layout doesn't collapse
+      const bodyOldWidth = document.body.style.width;
+      const bodyOldMaxWidth = document.body.style.maxWidth;
+      document.body.style.width = '1200px';
+      document.body.style.maxWidth = 'none';
+      // 7. Scroll to top so capture starts at correct position
+      const savedScrollY = window.scrollY;
+      window.scrollTo(0, 0);
 
       const opt = {
         margin:      0,
         filename:    'mypage.pdf',
         image:       { type: 'jpeg', quality: 0.97 },
         html2canvas: {
-          scale:       2,
-          useCORS:     true,
+          scale:           2,
+          useCORS:         true,
           letterRendering: true,
-          scrollX:     0,
-          scrollY:     0,
-          windowWidth: 1200,
-          onclone:     (cloneDoc) => {
-            // Make sure AOS classes are set on the clone too
+          scrollX:         0,
+          scrollY:         0,
+          windowWidth:     1200,
+          windowHeight:    document.body.scrollHeight,
+          width:           1200,
+          onclone: (cloneDoc) => {
+            // Force all AOS elements visible in the clone
             cloneDoc.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
             cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
               el.style.transition = 'none';
               el.style.width = (el.dataset.percent || '0') + '%';
             });
+            // Remove overflow clipping in the clone too
+            cloneDoc.documentElement.style.overflow = 'visible';
+            cloneDoc.documentElement.style.overflowX = 'visible';
+            cloneDoc.body.style.overflow = 'visible';
+            cloneDoc.body.style.overflowX = 'visible';
+            cloneDoc.body.style.width = '1200px';
+            cloneDoc.body.style.maxWidth = 'none';
+            // Hide floating elements in the clone
+            cloneDoc.querySelectorAll('.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .aurora-bg, .scroll-indicator, #contactUrlPopup').forEach(el => el.style.display = 'none');
           }
         },
         jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -3630,7 +3655,13 @@
       floatEls.forEach(el => { el.style.display = el.dataset.pdfOldDisplay || ''; delete el.dataset.pdfOldDisplay; });
       if (hero) hero.style.minHeight = heroOldMin;
       document.body.style.overflow = bodyOldOverflow;
+      document.body.style.overflowX = bodyOldOverflowX;
+      document.documentElement.style.overflow = htmlOldOverflow;
+      document.documentElement.style.overflowX = htmlOldOverflowX;
+      document.body.style.width = bodyOldWidth;
+      document.body.style.maxWidth = bodyOldMaxWidth;
       document.querySelectorAll('.skill-fill').forEach(el => el.style.transition = '');
+      window.scrollTo(0, savedScrollY);
       btn.innerHTML = origHTML;
       btn.disabled = false;
     });
