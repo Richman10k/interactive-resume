@@ -3577,35 +3577,33 @@
       btn.innerHTML = '⏳ Generating…';
       btn.disabled = true;
 
-      // Measure the full page dimensions BEFORE touching anything
-      const pageW = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth);
-      const pageH = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+      // Use a fixed design width — avoids inflated scrollWidth from off-screen positioned elements
+      const CAPTURE_WIDTH = 1200;
 
       const opt = {
         margin:    0,
         filename:  'mypage.pdf',
         image:     { type: 'jpeg', quality: 0.97 },
         html2canvas: {
-          scale:           2,
+          scale:           1.5,
           useCORS:         true,
           letterRendering: true,
           scrollX:         0,
           scrollY:         0,
-          windowWidth:     pageW,
-          windowHeight:    pageH,
+          windowWidth:     CAPTURE_WIDTH,
           // All fixes applied inside onclone — live page is never mutated visually
           onclone: (cloneDoc) => {
             const cb = cloneDoc.body;
             const ch = cloneDoc.documentElement;
-            // Remove all overflow/clip so the full content is visible
+            // Remove all overflow/clip
             ch.style.cssText += ';overflow:visible!important;overflow-x:visible!important;';
-            cb.style.cssText += ';overflow:visible!important;overflow-x:visible!important;width:' + pageW + 'px!important;max-width:none!important;';
-            // Fix hero full-viewport-height
+            cb.style.cssText += ';overflow:visible!important;overflow-x:visible!important;width:' + CAPTURE_WIDTH + 'px!important;max-width:none!important;';
+            // Collapse hero full-viewport-height (must use !important to beat stylesheet)
             const heroEl = cloneDoc.querySelector('.hero');
-            if (heroEl) heroEl.style.minHeight = 'auto';
+            if (heroEl) heroEl.style.cssText += ';min-height:unset!important;padding:60px 24px!important;';
             // Force all AOS-hidden elements visible
             cloneDoc.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
-            // Ensure skill bars show correct widths (no transition)
+            // Ensure skill bars show correct widths
             cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
               el.style.transition = 'none';
               el.style.width = (el.dataset.percent || '0') + '%';
@@ -3616,8 +3614,8 @@
             ).forEach(el => { el.style.display = 'none'; });
           }
         },
-        jsPDF:     { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        jsPDF:     { unit: 'mm', format: 'a4', orientation: 'landscape' },
+        pagebreak: { mode: ['css', 'legacy'] }
       };
 
       try {
