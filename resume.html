@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://unpkg.com https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>My Resume</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" integrity="sha384-/rJKQnzOkEo+daG0jMjU1IwwY9unxt1NBw3Ef2fmOJ3PW/TfAg2KXVoWwMZQZtw9" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
   <style>
     /* ===== CSS Custom Properties ===== */
     :root {
@@ -3566,31 +3567,72 @@
       document.body.removeChild(a); URL.revokeObjectURL(url);
     });
 
-    document.getElementById('downloadPdf').addEventListener('click', () => {
-      const html = window._publishedHTML || generatePublishedHTML();
-      // Inject script: force-show all AOS elements then print
-      const forceVisible = `
-        document.querySelectorAll('[data-aos]').forEach(function(el){
-          el.classList.add('aos-init','aos-animate');
-        });
-        document.querySelectorAll('.skill-fill').forEach(function(el){
-          el.style.width = (el.dataset.percent || '0') + '%';
-        });
-      `;
-      const printReady = html.replace('</body>',
-        '<script>window.addEventListener("load",function(){' + forceVisible + 'setTimeout(function(){window.print();},800);});<\/script></body>');
-      const blob = new Blob([printReady], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const tab = window.open(url, '_blank');
-      if (!tab) {
-        // Fallback if popup blocked: just download and instruct user
-        const a = document.createElement('a');
-        a.href = url; a.download = 'my-resume-print.html';
-        document.body.appendChild(a); a.click();
-        document.body.removeChild(a);
-        alert('Popup blocked. The print-ready HTML was downloaded — open it and press Ctrl+P (or Cmd+P) then choose "Save as PDF".');
+    document.getElementById('downloadPdf').addEventListener('click', async () => {
+      if (typeof html2pdf === 'undefined') {
+        alert('PDF library not loaded yet — please wait a moment and try again.');
+        return;
       }
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      const btn = document.getElementById('downloadPdf');
+      const origHTML = btn.innerHTML;
+      btn.innerHTML = '⏳ Generating…';
+      btn.disabled = true;
+
+      // --- Prepare the live page for capture ---
+      // 1. Force all AOS-hidden elements visible
+      document.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
+      // 2. Ensure skill bars are at their correct widths
+      document.querySelectorAll('.skill-fill').forEach(el => {
+        el.style.transition = 'none';
+        el.style.width = (el.dataset.percent || '0') + '%';
+      });
+      // 3. Hide floating / fixed chrome that shouldn't appear in PDF
+      const floatEls = document.querySelectorAll('.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .el-color-popover, .modal-overlay, .aurora-bg, .scroll-indicator, #contactUrlPopup');
+      floatEls.forEach(el => { el.dataset.pdfOldDisplay = el.style.display; el.style.display = 'none'; });
+      // 4. Hero: remove full-viewport height so it doesn't create a blank first page
+      const hero = document.querySelector('.hero');
+      const heroOldMin = hero ? hero.style.minHeight : '';
+      if (hero) hero.style.minHeight = 'auto';
+      // 5. Remove body overflow restriction so html2canvas can measure full height
+      const bodyOldOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'visible';
+
+      const opt = {
+        margin:      0,
+        filename:    'mypage.pdf',
+        image:       { type: 'jpeg', quality: 0.97 },
+        html2canvas: {
+          scale:       2,
+          useCORS:     true,
+          letterRendering: true,
+          scrollX:     0,
+          scrollY:     0,
+          windowWidth: 1200,
+          onclone:     (cloneDoc) => {
+            // Make sure AOS classes are set on the clone too
+            cloneDoc.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
+            cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
+              el.style.transition = 'none';
+              el.style.width = (el.dataset.percent || '0') + '%';
+            });
+          }
+        },
+        jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      try {
+        await html2pdf().set(opt).from(document.body).save();
+      } catch (err) {
+        alert('Could not generate PDF: ' + err.message);
+      }
+
+      // --- Restore page ---
+      floatEls.forEach(el => { el.style.display = el.dataset.pdfOldDisplay || ''; delete el.dataset.pdfOldDisplay; });
+      if (hero) hero.style.minHeight = heroOldMin;
+      document.body.style.overflow = bodyOldOverflow;
+      document.querySelectorAll('.skill-fill').forEach(el => el.style.transition = '');
+      btn.innerHTML = origHTML;
+      btn.disabled = false;
     });
 
     document.getElementById('copyPublishLink').addEventListener('click', () => {
