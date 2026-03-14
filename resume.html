@@ -3577,72 +3577,47 @@
       btn.innerHTML = '⏳ Generating…';
       btn.disabled = true;
 
-      // --- Prepare the live page for capture ---
-      // 1. Force all AOS-hidden elements visible
-      document.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
-      // 2. Ensure skill bars are at their correct widths
-      document.querySelectorAll('.skill-fill').forEach(el => {
-        el.style.transition = 'none';
-        el.style.width = (el.dataset.percent || '0') + '%';
-      });
-      // 3. Hide floating / fixed chrome that shouldn't appear in PDF
-      const floatEls = document.querySelectorAll('.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .el-color-popover, .modal-overlay, .aurora-bg, .scroll-indicator, #contactUrlPopup');
-      floatEls.forEach(el => { el.dataset.pdfOldDisplay = el.style.display; el.style.display = 'none'; });
-      // 4. Hero: remove full-viewport height so it doesn't create a blank first page
-      const hero = document.querySelector('.hero');
-      const heroOldMin = hero ? hero.style.minHeight : '';
-      if (hero) hero.style.minHeight = 'auto';
-      // 5. Remove ALL overflow restrictions so html2canvas captures the full page
-      const bodyOldOverflow = document.body.style.overflow;
-      const bodyOldOverflowX = document.body.style.overflowX;
-      const htmlOldOverflow = document.documentElement.style.overflow;
-      const htmlOldOverflowX = document.documentElement.style.overflowX;
-      document.body.style.overflow = 'visible';
-      document.body.style.overflowX = 'visible';
-      document.documentElement.style.overflow = 'visible';
-      document.documentElement.style.overflowX = 'visible';
-      // 6. Fix body width so layout doesn't collapse
-      const bodyOldWidth = document.body.style.width;
-      const bodyOldMaxWidth = document.body.style.maxWidth;
-      document.body.style.width = '1200px';
-      document.body.style.maxWidth = 'none';
-      // 7. Scroll to top so capture starts at correct position
-      const savedScrollY = window.scrollY;
-      window.scrollTo(0, 0);
+      // Measure the full page dimensions BEFORE touching anything
+      const pageW = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth);
+      const pageH = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
 
       const opt = {
-        margin:      0,
-        filename:    'mypage.pdf',
-        image:       { type: 'jpeg', quality: 0.97 },
+        margin:    0,
+        filename:  'mypage.pdf',
+        image:     { type: 'jpeg', quality: 0.97 },
         html2canvas: {
           scale:           2,
           useCORS:         true,
           letterRendering: true,
           scrollX:         0,
           scrollY:         0,
-          windowWidth:     1200,
-          windowHeight:    document.body.scrollHeight,
-          width:           1200,
+          windowWidth:     pageW,
+          windowHeight:    pageH,
+          // All fixes applied inside onclone — live page is never mutated visually
           onclone: (cloneDoc) => {
-            // Force all AOS elements visible in the clone
+            const cb = cloneDoc.body;
+            const ch = cloneDoc.documentElement;
+            // Remove all overflow/clip so the full content is visible
+            ch.style.cssText += ';overflow:visible!important;overflow-x:visible!important;';
+            cb.style.cssText += ';overflow:visible!important;overflow-x:visible!important;width:' + pageW + 'px!important;max-width:none!important;';
+            // Fix hero full-viewport-height
+            const heroEl = cloneDoc.querySelector('.hero');
+            if (heroEl) heroEl.style.minHeight = 'auto';
+            // Force all AOS-hidden elements visible
             cloneDoc.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-init', 'aos-animate'));
+            // Ensure skill bars show correct widths (no transition)
             cloneDoc.querySelectorAll('.skill-fill').forEach(el => {
               el.style.transition = 'none';
               el.style.width = (el.dataset.percent || '0') + '%';
             });
-            // Remove overflow clipping in the clone too
-            cloneDoc.documentElement.style.overflow = 'visible';
-            cloneDoc.documentElement.style.overflowX = 'visible';
-            cloneDoc.body.style.overflow = 'visible';
-            cloneDoc.body.style.overflowX = 'visible';
-            cloneDoc.body.style.width = '1200px';
-            cloneDoc.body.style.maxWidth = 'none';
-            // Hide floating elements in the clone
-            cloneDoc.querySelectorAll('.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .aurora-bg, .scroll-indicator, #contactUrlPopup').forEach(el => el.style.display = 'none');
+            // Hide floating UI chrome
+            cloneDoc.querySelectorAll(
+              '.fab-group, .navbar, .edit-banner, .save-toast, .color-panel, .el-color-popover, .modal-overlay, .aurora-bg, .scroll-indicator, #contactUrlPopup'
+            ).forEach(el => { el.style.display = 'none'; });
           }
         },
-        jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
+        jsPDF:     { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       try {
@@ -3651,17 +3626,6 @@
         alert('Could not generate PDF: ' + err.message);
       }
 
-      // --- Restore page ---
-      floatEls.forEach(el => { el.style.display = el.dataset.pdfOldDisplay || ''; delete el.dataset.pdfOldDisplay; });
-      if (hero) hero.style.minHeight = heroOldMin;
-      document.body.style.overflow = bodyOldOverflow;
-      document.body.style.overflowX = bodyOldOverflowX;
-      document.documentElement.style.overflow = htmlOldOverflow;
-      document.documentElement.style.overflowX = htmlOldOverflowX;
-      document.body.style.width = bodyOldWidth;
-      document.body.style.maxWidth = bodyOldMaxWidth;
-      document.querySelectorAll('.skill-fill').forEach(el => el.style.transition = '');
-      window.scrollTo(0, savedScrollY);
       btn.innerHTML = origHTML;
       btn.disabled = false;
     });
