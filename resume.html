@@ -707,8 +707,33 @@
       border-radius: 10px;
       background: linear-gradient(90deg, var(--primary), var(--accent));
       width: 0;
-      transition: width 1.4s ease-out;
+      transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: visible;
     }
+    .skill-fill::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%) scale(0);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      pointer-events: none;
+    }
+    .skill-fill.bar-pulse::after {
+      animation: barBubble 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes barBubble {
+      0%   { transform: translateY(-50%) scale(0); opacity: 0.9; }
+      50%  { transform: translateY(-50%) scale(1.4); opacity: 0.7; }
+      100% { transform: translateY(-50%) scale(0); opacity: 0; }
+    }
+    .skill-item { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .skill-tags h3 { margin-bottom: 22px; }
     .tags-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
     .tag {
@@ -1434,6 +1459,9 @@
       .cert-card, .project-card { break-inside: avoid; page-break-inside: avoid; }
       .hero { min-height: unset !important; padding: 40px 20px !important; }
       .container { max-width: 100% !important; padding: 0 20px !important; }
+      /* Force all AOS-hidden elements visible for print */
+      [data-aos] { opacity: 1 !important; transform: translateX(0) translateY(0) scale(1) !important; transition: none !important; }
+      .skill-fill { transition: none !important; }
     }
   </style>
 </head>
@@ -2119,6 +2147,17 @@
     }, { threshold: 0.25 });
     if (skillsSection) observerSkills.observe(skillsSection);
 
+    // ===== Assign directional AOS animations to timeline items =====
+    function assignTimelineAOS(timeline) {
+      if (!timeline) return;
+      timeline.querySelectorAll('.timeline-item').forEach((item, i) => {
+        item.setAttribute('data-aos', i % 2 === 0 ? 'fade-right' : 'fade-left');
+        item.setAttribute('data-aos-delay', (i === 0 ? 100 : 100 + i * 80) + '');
+      });
+    }
+    assignTimelineAOS(document.getElementById('exp-timeline'));
+    assignTimelineAOS(document.getElementById('edu-timeline'));
+
     // ===== Restore data & exit early in published/view mode =====
     restoreData();
     initCardUI();
@@ -2163,12 +2202,14 @@
       }
     });
 
-    // Sort skill items by percentage, highest first
+    // Sort skill items by percentage, highest first — with FLIP animation
     function sortSkillsByPercent() {
       const container = document.querySelector('.skill-bars');
       if (!container) return;
       const items = Array.from(container.querySelectorAll('.skill-item'));
       if (items.length < 2) return;
+      // Record "first" positions
+      const first = new Map(items.map(el => [el, el.getBoundingClientRect().top]));
       items.sort((a, b) => {
         const aVal = parseInt(a.querySelector('.skill-percent')?.dataset.pct) || 0;
         const bVal = parseInt(b.querySelector('.skill-percent')?.dataset.pct) || 0;
@@ -2178,6 +2219,20 @@
       items.forEach(el => el.remove());
       if (controls) items.forEach(el => controls.insertAdjacentElement('beforebegin', el));
       else items.forEach(el => container.appendChild(el));
+      // FLIP: compute delta and play
+      items.forEach(el => {
+        const lastTop = el.getBoundingClientRect().top;
+        const delta = (first.get(el) || lastTop) - lastTop;
+        if (Math.abs(delta) < 1) return;
+        el.style.transition = 'none';
+        el.style.transform = `translateY(${delta}px)`;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            el.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            el.style.transform = 'translateY(0)';
+          });
+        });
+      });
     }
 
     // Delegated click handler for everything in edit mode
@@ -2198,6 +2253,10 @@
         pctEl.textContent = val + '%';
         fillEl.dataset.percent = val;
         fillEl.style.width = val + '%';
+        fillEl.classList.remove('bar-pulse');
+        void fillEl.offsetWidth; // reflow to restart animation
+        fillEl.classList.add('bar-pulse');
+        setTimeout(() => fillEl.classList.remove('bar-pulse'), 600);
         sortSkillsByPercent();
         saveData();
         return;
@@ -2225,6 +2284,10 @@
           const fillEl = pctText.closest('.skill-item').querySelector('.skill-fill');
           fillEl.dataset.percent = v;
           fillEl.style.width = v + '%';
+          fillEl.classList.remove('bar-pulse');
+          void fillEl.offsetWidth;
+          fillEl.classList.add('bar-pulse');
+          setTimeout(() => fillEl.classList.remove('bar-pulse'), 600);
           sortSkillsByPercent();
           saveData();
         }
@@ -2382,8 +2445,12 @@
       const addExp = e.target.closest('[data-action="add-experience"]');
       if (addExp) {
         e.stopPropagation();
+        const timeline = document.getElementById('exp-timeline');
+        const idx = timeline.querySelectorAll('.timeline-item').length;
+        const dir = idx % 2 === 0 ? 'fade-right' : 'fade-left';
         const item = document.createElement('div');
         item.className = 'timeline-item';
+        item.setAttribute('data-aos', dir);
         item.innerHTML = '<div class="glass-card timeline-card">' +
           '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
           '<span class="date" data-editable="true">20XX — 20XX</span>' +
@@ -2392,7 +2459,7 @@
           '<ul><li><span data-editable="true">Describe your achievement here</span><button class="bullet-remove" data-action="remove-bullet">&times;</button></li></ul>' +
           '<div class="bullet-controls"><button class="ctrl-btn" data-action="add-bullet">＋ Add Point</button></div>' +
         '</div>';
-        document.getElementById('exp-timeline').appendChild(item);
+        timeline.appendChild(item);
         saveData();
         return;
       }
@@ -2401,8 +2468,12 @@
       const addEdu = e.target.closest('[data-action="add-education"]');
       if (addEdu) {
         e.stopPropagation();
+        const timeline = document.getElementById('edu-timeline');
+        const idx = timeline.querySelectorAll('.timeline-item').length;
+        const dir = idx % 2 === 0 ? 'fade-right' : 'fade-left';
         const item = document.createElement('div');
         item.className = 'timeline-item';
+        item.setAttribute('data-aos', dir);
         item.innerHTML = '<div class="glass-card timeline-card">' +
           '<button class="item-remove-btn" data-action="remove-item" title="Remove">&times;</button>' +
           '<span class="date" data-editable="true">20XX — 20XX</span>' +
@@ -2411,7 +2482,7 @@
           '<ul><li><span data-editable="true">Notable achievement</span><button class="bullet-remove" data-action="remove-bullet">&times;</button></li></ul>' +
           '<div class="bullet-controls"><button class="ctrl-btn" data-action="add-bullet">＋ Add Point</button></div>' +
         '</div>';
-        document.getElementById('edu-timeline').appendChild(item);
+        timeline.appendChild(item);
         saveData();
         return;
       }
@@ -3497,8 +3568,17 @@
 
     document.getElementById('downloadPdf').addEventListener('click', () => {
       const html = window._publishedHTML || generatePublishedHTML();
-      // Inject auto-print script so the tab prints immediately on open
-      const printReady = html.replace('</body>', '<script>window.addEventListener("load",function(){setTimeout(function(){window.print();},600);});<\/script></body>');
+      // Inject script: force-show all AOS elements then print
+      const forceVisible = `
+        document.querySelectorAll('[data-aos]').forEach(function(el){
+          el.classList.add('aos-init','aos-animate');
+        });
+        document.querySelectorAll('.skill-fill').forEach(function(el){
+          el.style.width = (el.dataset.percent || '0') + '%';
+        });
+      `;
+      const printReady = html.replace('</body>',
+        '<script>window.addEventListener("load",function(){' + forceVisible + 'setTimeout(function(){window.print();},800);});<\/script></body>');
       const blob = new Blob([printReady], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const tab = window.open(url, '_blank');
